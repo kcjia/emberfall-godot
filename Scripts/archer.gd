@@ -109,7 +109,7 @@ func _cast_attack2_pierce_arrow() -> void:
 		return
 	var arrow = ARCHER_PIERCE_ARROW_SCENE.instantiate()
 	get_parent().add_child(arrow)
-	var direction := (target.global_position - spell_marker.global_position).normalized()
+	var direction = (target.global_position - spell_marker.global_position).normalized()
 	if arrow.has_method("setup"):
 		arrow.setup(spell_marker.global_position, direction, is_system_spawned, int(attack2_damage * _get_player_damage_multiplier()), pierce_arrow_speed, pierce_arrow_max_distance, ARROW_TEXTURE_03)
 	else:

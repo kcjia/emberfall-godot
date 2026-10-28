@@ -9,6 +9,5 @@ func _ready() -> void:
 	])
 	await DialogueManager.dialogue_finished
 	# 对话结束后，开启玩家与系统敌人的持续生成调度。
-	print("[主场景] 对话结束，调用 start_spawning")
 	$EnemySpawner.start_spawning()
 
