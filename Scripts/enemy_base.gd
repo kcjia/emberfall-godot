@@ -473,9 +473,10 @@ func die() -> void:
 	is_attacking = false
 	change_state(State.DEATH)
 	
-	# 如果击杀的是系统敌怪，按技能树等级给玩家奖励金币并保存。
+	# 如果击杀的是系统敌怪，按击杀金币给玩家奖励金币并保存。
+	# 基础 1 金 + 击杀金币等级（每级 +1），0 级也不再是 0 金。
 	if is_system_spawned:
-		GameManager.add_gold(GameManager.upgrades["kill_gold_lvl"])
+		GameManager.add_gold(1 + GameManager.upgrades["kill_gold_lvl"])
 		GameManager.save_local_config()
 	
 	# 【核心】：死亡时隐藏手动添加的扣血 Label

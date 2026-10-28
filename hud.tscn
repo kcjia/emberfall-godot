@@ -228,6 +228,10 @@ text = "技能树"
 layout_mode = 2
 text = "设置"
 
+[node name="RepairButton" type="Button" parent="Up/HBoxContainer" unique_id=1777123456]
+layout_mode = 2
+text = "修复基地"
+
 [node name="Down" type="PanelContainer" parent="." unique_id=1829258445]
 offset_top = 712.0
 offset_right = 1280.0

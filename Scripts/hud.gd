@@ -19,6 +19,7 @@ const GAME_OVER_MUSIC: AudioStream = preload("res://Sound/Game Over.ogg")
 @onready var attack3_button: TextureButton = %Attack3Button
 @onready var attack2_cooldown_overlay: Control = $Up/HBoxContainer/Attack2Button/CooldownOverlay
 @onready var attack3_cooldown_overlay: Control = $Up/HBoxContainer/Attack3Button/CooldownOverlay
+@onready var repair_button: Button = $Up/HBoxContainer/RepairButton
 
 # 顶部资源与计时
 @onready var gold_label: Label = $Up/HBoxContainer/Sprite2D/GoldLabel
@@ -86,6 +87,9 @@ const GAME_OVER_MUSIC: AudioStream = preload("res://Sound/Game Over.ogg")
 }
 @export var attack2_gold_cost: int = 30
 @export var attack3_gold_cost: int = 50
+# 基地修复配置（金币新用途之一：花金币回基地生命）。
+@export var base_repair_cost: int = 50
+@export var base_repair_amount: float = 250.0
 
 var remaining_seconds: float = 30.0 * 60.0 # 30分钟 = 1800秒
 var is_game_active: bool = true
@@ -124,6 +128,7 @@ func _ready() -> void:
 	# 技能释放
 	attack2_button.pressed.connect(_start_attack2_cooldown)
 	attack3_button.pressed.connect(_start_attack3_cooldown)
+	repair_button.pressed.connect(_on_repair_button_pressed)
 
 	# 弹窗按钮响应
 	restart_button.pressed.connect(_on_restart_button_pressed)
@@ -165,6 +170,7 @@ func _trigger_victory() -> void:
 func _update_gold_display(val: int) -> void:
 	# 更新顶部金币文本。
 	gold_label.text = str(val)
+	_refresh_repair_button()
 
 func _on_gold_timer_timeout() -> void:
 	# 按金币计时器周期增加金币。
@@ -221,6 +227,27 @@ func _start_attack3_cooldown() -> void:
 	player_attack_requested.emit("Attack3")
 	await get_tree().create_timer(attack3_cooldown).timeout
 	attack3_button.disabled = false
+
+func _on_repair_button_pressed() -> void:
+	# 花金币修复玩家基地：金币新用途之一。
+	if GameManager.player_gold < base_repair_cost:
+		return
+	var base = get_tree().get_first_node_in_group("player_base")
+	if base == null or not base.has_method("heal"):
+		return
+	if "current_health" in base and "max_health" in base and base.current_health >= base.max_health:
+		return
+	GameManager.add_gold(-base_repair_cost)
+	base.heal(base_repair_amount)
+
+func _refresh_repair_button() -> void:
+	# 刷新修复按钮的可用状态：金币不足、找不到基地或基地满血时禁用。
+	var base = get_tree().get_first_node_in_group("player_base")
+	var full_hp := false
+	if base != null and "current_health" in base and "max_health" in base:
+		full_hp = base.current_health >= base.max_health
+	repair_button.disabled = GameManager.player_gold < base_repair_cost or base == null or full_hp
+	repair_button.tooltip_text = "修复基地：%d 金币（+%d 生命）" % [base_repair_cost, int(base_repair_amount)]
 
 func show_game_over() -> void:
 	# 显示游戏结束弹窗并聚焦重开按钮，奖励技能点。
@@ -493,7 +520,7 @@ func _update_skill_tree_ui() -> void:
 	if kill_gold_lvl >= MAX_UPGRADE_LEVEL:
 		btn_init_gold.text = "击杀金币提升 [已满级: Lv.10]"
 	else:
-		btn_init_gold.text = "击杀金币提升 Lv.%d/10 (+1金/击杀) | 消耗: 1 技能点" % kill_gold_lvl
+		btn_init_gold.text = "击杀金币提升 Lv.%d/10（每杀 %d 金）| 消耗: 1 技能点" % [kill_gold_lvl, 1 + kill_gold_lvl]
 	
 	# 2. 金币增速等级
 	var rate_lvl: int = up["gold_rate_lvl"]

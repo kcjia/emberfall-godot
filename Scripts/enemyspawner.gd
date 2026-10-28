@@ -46,10 +46,12 @@ var player_next_spawn_times: Dictionary[String, float] = {}
 var system_next_spawn_times: Dictionary[String, float] = {}
 var spawning_enabled: bool = false
 
-# 【新增】用于限制双方同时生成的兵种种类上限为 3 种
+# 【生产上限】：玩家与系统同时在场生产的兵种种类上限均为 3 种。
+# 玩家：按钮只作生产切换（加入/切换生产队列），点按不直接出兵；
+# 系统：随时间逐步解锁 tier，0 秒一档、60 秒两档、180 秒三档全开，不再高档替换低档。
+# 敌方基地半血被动召唤走自己的三兵种间隔，不受此限制。
 const MAX_ACTIVE_SPAWN_TYPES: int = 3
 var active_player_spawn_types: Array[String] = []
-var active_system_spawn_types: Array[String] = [] # 存储系统激活的 schedule_key 队列
 
 # 启动敌人生成计时器并连接 HUD 信号。
 func _ready() -> void:
@@ -92,17 +94,31 @@ func start_spawning() -> void:
 	spawning_enabled = true
 	_initialize_player_schedule()
 
-# 接收 HUD 的兵种解锁事件，将该兵种加入持续生产队列。
+# 接收 HUD 的兵种按钮事件：按钮只作生产切换，不直接出兵。
+# 已在生产队列中的兵种再点不额外出兵；未在队列中的兵种加入队列，
+# 满 3 种时替换最早加入的兵种（被替换的兵种停止生产，计时器清除）。
 func _on_spawn_monster_requested(monster_id: String) -> void:
 	if not player_spawn_order.has(monster_id):
 		return
-	player_next_spawn_times[monster_id] = game_time
+	if active_player_spawn_types.has(monster_id):
+		return
+	if active_player_spawn_types.size() >= MAX_ACTIVE_SPAWN_TYPES:
+		var removed_id = active_player_spawn_types.pop_front()
+		player_next_spawn_times.erase(removed_id)
+	active_player_spawn_types.append(monster_id)
+	if not player_next_spawn_times.has(monster_id):
+		var interval := maxf(player_spawn_intervals.get(monster_id, 3.0), 0.1)
+		player_next_spawn_times[monster_id] = game_time + interval
 
-# 初始化开局已解锁兵种的独立生产时间。
+# 初始化开局已解锁兵种的独立生产时间与生产队列。
+# 幂等：已在队列或已有计时器的兵种不动，避免对话期间点按钮的状态被二次初始化覆盖。
 func _initialize_player_schedule() -> void:
 	for monster_id in player_spawn_order:
 		if GameManager.battle_unlocked_monsters.get(monster_id, false):
-			player_next_spawn_times[monster_id] = 0.0
+			if not player_next_spawn_times.has(monster_id):
+				player_next_spawn_times[monster_id] = 0.0
+			if not active_player_spawn_types.has(monster_id) and active_player_spawn_types.size() < MAX_ACTIVE_SPAWN_TYPES:
+				active_player_spawn_types.append(monster_id)
 
 # 按指定 ID 实例化一个玩家单位。
 func _spawn_player_monster(monster_id: String) -> void:
@@ -126,28 +142,19 @@ func _spawn_player_monster(monster_id: String) -> void:
 	enemy.global_position = spawn_point.global_position
 	enemy.setup_as_player_enemy()
 
-# 按按钮顺序持续生产每个已解锁的玩家兵种（限制同时最多 3 种）。
+# 按按钮顺序持续生产生产队列中的已解锁兵种（同时最多 3 种）。
 func _process_player_schedule() -> void:
 	for monster_id in player_spawn_order:
+		if not active_player_spawn_types.has(monster_id):
+			continue
 		if not GameManager.battle_unlocked_monsters.get(monster_id, false):
 			continue
-		var next_spawn_time: float = player_next_spawn_times.get(monster_id, game_time)
+		var interval := maxf(player_spawn_intervals.get(monster_id, 3.0), 0.1)
+		var next_spawn_time: float = player_next_spawn_times.get(monster_id, game_time + interval)
 		if game_time < next_spawn_time:
 			continue
-
-		# 【修改点：如果该兵种不在当前激活列表中，说明它是一次“新添加”的生成】
-		if not active_player_spawn_types.has(monster_id):
-			if active_player_spawn_types.size() >= MAX_ACTIVE_SPAWN_TYPES:
-				# 移除最早进入（队列头部）的旧兵种
-				var removed_id = active_player_spawn_types.pop_front()
-				# 可选：如果希望被移除的旧兵种重置下一次生成时间，可以将其从计时器中清除或重置
-				# player_next_spawn_times[removed_id] = game_time + 99999.0 # 如果想彻底停掉旧的
-			
-			# 将新兵种加入激活队列尾部
-			active_player_spawn_types.append(monster_id)
-
 		_spawn_player_monster(monster_id)
-		player_next_spawn_times[monster_id] = game_time + maxf(player_spawn_intervals.get(monster_id, 3.0), 0.1)
+		player_next_spawn_times[monster_id] = game_time + interval
 
 # 将 HUD 技能攻击请求转发给玩家基地。
 func _on_player_attack_requested(attack_name: String) -> void:
@@ -175,20 +182,18 @@ func _cast_warlock_fire() -> void:
 		if fire_effect.has_method("play_effect"):
 			fire_effect.play_effect(damage, enemy)
 
-# 按数组顺序和解锁时间持续生成系统敌人。
+# 按解锁时间持续生成系统敌人：已解锁的 tier 全部持续生成，
+# 0 秒只有一档、60 秒两档、180 秒三档全开，不再高档替换低档。
+# tier 只有三档，天然就是“最多三种”。
 func _process_system_schedule() -> void:
-	if game_time >= monster_num3_unlock_time:
-		_process_system_group(monster_num3, monster_num3_intervals, monster_num3_unlock_time, "tier_3")
-		return
+	_process_system_group(monster_num1, monster_num1_intervals, 0.0, "tier_1")
 	if game_time >= monster_num2_unlock_time:
 		_process_system_group(monster_num2, monster_num2_intervals, monster_num2_unlock_time, "tier_2")
-		return
-	if game_time >= 0.0:
-		_process_system_group(monster_num1, monster_num1_intervals, 0.0, "tier_1")
-		return
+	if game_time >= monster_num3_unlock_time:
+		_process_system_group(monster_num3, monster_num3_intervals, monster_num3_unlock_time, "tier_3")
 
 
-# 处理一个敌人数组内每个条目的独立生成时间（限制1种）处理方式不同，只会添加一种怪组。
+# 处理一个敌人数组内每个条目的独立生成时间。
 func _process_system_group(scenes: Array[PackedScene], intervals: Array[float], unlock_time: float, group_id: String) -> void:
 	if game_time < unlock_time or not enemy_point:
 		return
@@ -200,16 +205,6 @@ func _process_system_group(scenes: Array[PackedScene], intervals: Array[float], 
 		var next_spawn_time: float = system_next_spawn_times.get(schedule_key, game_time)
 		if game_time < next_spawn_time:
 			continue
-
-		# 【修改点：如果该系统轨道不在当前激活列表中，说明是新加入的】
-		if not active_system_spawn_types.has(schedule_key):
-			if active_system_spawn_types.size() >= 1:
-				# 移除最早激活的系统轨道
-				var removed_key = active_system_spawn_types.pop_front()
-			
-			# 将新的系统轨道加入激活列表尾部
-			active_system_spawn_types.append(schedule_key)	
-		
 		_spawn_system_monster(scene)
 		var interval := intervals[index] if index < intervals.size() else 2.0
 		system_next_spawn_times[schedule_key] = game_time + maxf(interval, 0.1)

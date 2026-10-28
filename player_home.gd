@@ -193,6 +193,15 @@ func take_damage(amount: float) -> void:
 	if current_health <= 0:
 		_die()
 
+# 恢复基地生命值（金币修复用），不超过上限并同步血条。
+func heal(amount: float) -> void:
+	if current_health <= 0.0 or current_health >= max_health:
+		return
+	current_health = minf(current_health + amount, max_health)
+	if progress_bar:
+		progress_bar.value = current_health
+	health_changed.emit(current_health, max_health)
+
 # 停止技能、广播死亡并销毁基地。
 func _die() -> void:
 	died.emit()
