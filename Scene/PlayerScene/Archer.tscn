@@ -337,21 +337,6 @@ tracks/1/keys = {
 }]
 }
 
-[sub_resource type="Animation" id="Animation_archer3"]
-length = 0.6
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("AnimatedSprite2D:animation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Attack2"]
-}
-
 [sub_resource type="Animation" id="Animation_vv2tb"]
 length = 0.4
 tracks/0/type = "value"
@@ -432,7 +417,6 @@ tracks/0/keys = {
 _data = {
 &"Attack1": SubResource("Animation_61wv4"),
 &"Attack2": SubResource("Animation_okxvb"),
-&"Attack3": SubResource("Animation_archer3"),
 &"Death": SubResource("Animation_vv2tb"),
 &"Hurt": SubResource("Animation_h7ya4"),
 &"Idle": SubResource("Animation_l27hv"),

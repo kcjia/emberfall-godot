@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/archer_pierce_arrow.gd" id="1_pierce"]
+[ext_resource type="Texture2D" path="res://Image/Arrow03.png" id="2_pierce"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pierce"]
+radius = 8.0
+
+[node name="Area2D" type="Area2D" unique_id=2048576139]
+script = ExtResource("1_pierce")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1593048276]
+texture = ExtResource("2_pierce")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=983562014]
+shape = SubResource("CircleShape2D_pierce")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=1405968143]
+rect = Rect2(-16, -16, 32, 32)
