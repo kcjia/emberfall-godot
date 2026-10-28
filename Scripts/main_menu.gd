@@ -9,6 +9,9 @@ extends Control
 
 # 初始化菜单焦点并绑定开始、退出按钮。
 func _ready() -> void:
+	# 按钮文本走翻译表（翻译来自 Localization/ocalization.csv），否则只会显示原文 key。
+	start_button.text = tr("UI_GAME_START")
+	quit_button.text = tr("UI_QUIT")
 	# 抓取按钮焦点（支持键盘/手柄操作）
 	start_button.grab_focus()
 	

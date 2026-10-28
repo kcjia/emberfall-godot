@@ -135,6 +135,8 @@ func apply_resolution(mode_idx: int) -> void:
 	# 根据选项设置窗口模式、尺寸和屏幕居中位置。
 	# 注意：选项 0 的标签是 1280×768（与工程视口一致），之前代码错写成 1280×720，已修正；
 	# 尺寸超过当前屏幕时钳制到屏幕内，避免大尺寸选项在小屏幕上看起来“没反应”。
+	# 渲染分辨率也跟随选项（content_scale_size），避免窗口放大后仍用 1280×768 拉伸导致模糊；
+	# 编辑器内嵌游戏视图时窗口尺寸由编辑器控制、改不了大小，但渲染分辨率仍会跟随变化。
 	current_window_mode = mode_idx
 	var window := get_window()
 	var screen_size := DisplayServer.screen_get_size(window.current_screen)
@@ -142,14 +144,18 @@ func apply_resolution(mode_idx: int) -> void:
 		0:
 			window.mode = Window.MODE_WINDOWED
 			window.size = Vector2i(mini(1280, screen_size.x), mini(768, screen_size.y))
+			window.content_scale_size = window.size
 		1:
 			window.mode = Window.MODE_WINDOWED
 			window.size = Vector2i(mini(1920, screen_size.x), mini(1080, screen_size.y))
+			window.content_scale_size = window.size
 		2:
 			window.mode = Window.MODE_WINDOWED
 			window.size = Vector2i(mini(2560, screen_size.x), mini(1440, screen_size.y))
+			window.content_scale_size = window.size
 		3:
 			window.mode = Window.MODE_EXCLUSIVE_FULLSCREEN
+			window.content_scale_size = screen_size
 
 	if mode_idx != 3:
 		window.position = (screen_size - window.size) / 2

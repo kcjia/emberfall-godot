@@ -78,6 +78,7 @@ func _ready() -> void:
 	currenthealth.max_value = max_health
 	currenthealth.value = max_health
 	current_health = max_health
+	_setup_health_bar_juice()
 	
 
 	apply_layer_config(3 if is_system_spawned else 2)
@@ -184,6 +185,7 @@ func update_facing_direction() -> void:
 func _physics_process(delta: float) -> void:
 	if currenthealth:
 		currenthealth.value = clamp(current_health, 0, max_health)
+		_update_health_bar_juice(delta)
 
 	if current_state == State.DEATH or current_state == State.HURT:
 		velocity.x = move_toward(velocity.x, 0, move_speed * delta * 5)
@@ -417,6 +419,7 @@ func take_damage(amount: int) -> void:
 		return
 		
 	current_health -= amount
+	_flash_hit()
 	show_damage_number(amount)
 
 	if current_health <= 0:
@@ -432,37 +435,116 @@ func toggle_invincibility() -> void:
 
 var damage_tween: Tween
 
+# 血条表现：主条按血量变色（绿→黄→红）+ 白色残影条（掉血后缓慢追赶，补血瞬间跟上）。
+var _health_fill_stylebox: StyleBoxFlat = null
+var _ghost_health_bar: ProgressBar = null
+var _flash_tween: Tween = null
+
+func _setup_health_bar_juice() -> void:
+	if not is_instance_valid(currenthealth):
+		return
+	# 沿用场景里原有的填充样式，只改颜色，避免覆盖圆角等外观。
+	var orig_fill := currenthealth.get_theme_stylebox("fill")
+	if orig_fill is StyleBoxFlat:
+		_health_fill_stylebox = orig_fill.duplicate() as StyleBoxFlat
+	else:
+		_health_fill_stylebox = StyleBoxFlat.new()
+	currenthealth.add_theme_stylebox_override("fill", _health_fill_stylebox)
+	# 残影条：与主条同位置同尺寸、垫在主条后面，掉血时慢慢追赶。
+	_ghost_health_bar = ProgressBar.new()
+	_ghost_health_bar.position = currenthealth.position
+	_ghost_health_bar.size = currenthealth.size
+	_ghost_health_bar.min_value = 0.0
+	_ghost_health_bar.max_value = max_health
+	_ghost_health_bar.value = max_health
+	_ghost_health_bar.show_percentage = false
+	var ghost_bg := StyleBoxFlat.new()
+	ghost_bg.bg_color = Color(0.0, 0.0, 0.0, 0.0)
+	_ghost_health_bar.add_theme_stylebox_override("background", ghost_bg)
+	var ghost_fill := StyleBoxFlat.new()
+	ghost_fill.bg_color = Color(1.0, 1.0, 1.0, 0.9)
+	_ghost_health_bar.add_theme_stylebox_override("fill", ghost_fill)
+	add_child(_ghost_health_bar)
+	move_child(_ghost_health_bar, currenthealth.get_index())
+	if is_instance_valid(damage_label):
+		damage_label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 1.0))
+		damage_label.add_theme_constant_override("outline_size", 3)
+
+func _update_health_bar_juice(delta: float) -> void:
+	if not is_instance_valid(currenthealth):
+		return
+	var hp_ratio := 0.0
+	if max_health > 0:
+		hp_ratio = clampf(current_health / max_health, 0.0, 1.0)
+	if _health_fill_stylebox != null:
+		if hp_ratio > 0.5:
+			_health_fill_stylebox.bg_color = Color(0.3, 0.85, 0.4)
+		elif hp_ratio > 0.25:
+			_health_fill_stylebox.bg_color = Color(1.0, 0.8, 0.2)
+		else:
+			_health_fill_stylebox.bg_color = Color(1.0, 0.25, 0.2)
+	if is_instance_valid(_ghost_health_bar):
+		if currenthealth.value > _ghost_health_bar.value:
+			_ghost_health_bar.value = currenthealth.value
+		else:
+			_ghost_health_bar.value = move_toward(_ghost_health_bar.value, currenthealth.value, max_health * delta * 0.5)
+
+# 受击瞬间把精灵调成过曝白，0.15 秒内恢复（受击闪白）。
+func _flash_hit() -> void:
+	if not is_instance_valid(sprite):
+		return
+	if _flash_tween and _flash_tween.is_running():
+		_flash_tween.kill()
+	sprite.modulate = Color(2.5, 2.5, 2.5, 1.0)
+	_flash_tween = create_tween()
+	_flash_tween.tween_property(sprite, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.15)
+
 # 显示并播放受伤数字的浮动淡出动画。
+# 按伤害量分档：小伤害黄白小字，中伤害橙字，大伤害（≥100）红字放大、飘得更高更久。
 func show_damage_number(amount: int) -> void:
 	if not is_instance_valid(damage_label):
 		return
-	
+
 	if damage_tween and damage_tween.is_running():
 		damage_tween.kill()
 
-	# 1. 设置文本与显示状态
+	# 1. 按伤害量定颜色与弹字大小
+	var dmg_color := Color(1.0, 0.85, 0.4, 1.0)
+	var pop_scale := Vector2(1.1, 1.1)
+	var rise := 20.0
+	var fade_time := 0.5
+	if amount >= 100:
+		dmg_color = Color(1.0, 0.25, 0.2, 1.0)
+		pop_scale = Vector2(1.5, 1.5)
+		rise = 32.0
+		fade_time = 0.7
+	elif amount >= 30:
+		dmg_color = Color(1.0, 0.6, 0.15, 1.0)
+		pop_scale = Vector2(1.25, 1.25)
+
+	# 2. 设置文本与显示状态
 	damage_label.text = "-%d" % amount
-	damage_label.modulate = Color(1.0, 0.2, 0.2, 1.0) # 初始红色透明度 100%
+	damage_label.modulate = dmg_color
 	damage_label.visible = true
-	
-	# 2. 初始位置：复位到头顶默认相对位置（带微小水平随机偏移）
+
+	# 3. 初始位置：复位到头顶默认相对位置（带微小水平随机偏移）
 	var base_y: float = -25.0
 	var random_x: float = randf_range(-6.0, 6.0)
 	damage_label.position = Vector2(random_x, base_y)
 	damage_label.scale = Vector2(0.8, 0.8)
-	
-	# 3. 创建 Tween 动画（如果前一个飘字动画没播完，先杀掉旧动画）
+
+	# 4. 创建 Tween 动画（如果前一个飘字动画没播完，先杀掉旧动画）
 	damage_tween = create_tween()
 	damage_tween.set_parallel(true)
-	
-	# 向上漂浮 20 像素
-	damage_tween.tween_property(damage_label, "position:y", base_y - 20.0, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+
+	# 向上漂浮
+	damage_tween.tween_property(damage_label, "position:y", base_y - rise, fade_time).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	# 瞬间拉大字号弹效果
-	damage_tween.tween_property(damage_label, "scale", Vector2(1.1, 1.1), 0.12)
+	damage_tween.tween_property(damage_label, "scale", pop_scale, 0.12)
 	# 淡出消失
-	damage_tween.tween_property(damage_label, "modulate:a", 0.0, 0.5).set_delay(0.15)
-	
-	# 4. 动画结束后隐藏 Label 备用
+	damage_tween.tween_property(damage_label, "modulate:a", 0.0, fade_time).set_delay(0.15)
+
+	# 5. 动画结束后隐藏 Label 备用
 	damage_tween.chain().tween_callback(func():
 		if is_instance_valid(damage_label):
 			damage_label.visible = false

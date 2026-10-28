@@ -6,7 +6,39 @@ UI_SKILL_TREE,技能树,Skill Tree,スキルツリー
 UI_SETTINGS,设置,Settings,設定
 UI_VICTORY,战役胜利！,Victory!,勝利！
 UI_VICTORY_DESC,坚持防守 30 分钟，阵线已稳固！,Held the line for 30 minutes!,30分間防衛成功！
-UI_GAME_START,开始游戏,Start Game,
+UI_GAME_START,开始游戏,Start Game,ゲームスタート
 UI_COIN,金币: %d,Gold: %d,ゴールド: %d
 SKILL_INIT_GOLD,初始金币 Lv.%d,Init Gold Lv.%d,初期ゴールド Lv.%d
 SKILL_MAX,[最大等级],[Max Level],[最大レベル]
+UI_SKILL_POINTS,技能点: %d,Skill Points: %d,スキルポイント：%d
+UI_ECO_SECTION,,[Economy],
+UI_SKILL_SECTION,,[Skill Upgrades],
+UI_SOLDIER_SECTION,,[Troops & Upgrades],
+SKILL_KILL_GOLD,击杀金币提升 Lv.%d/10（每杀 %d 金）| 消耗: 1 技能点,Kill Gold Boost Lv.%d/10 (%d gold per kill) | Cost: 1 skill point,キルゴールド強化 Lv.%d/10 （キル毎 %d 金） | 消費：スキルポイント 1
+SKILL_KILL_GOLD_MAX,击杀金币提升 [已满级: Lv.10],Kill Gold Boost [MAX: Lv.10],キルゴールド強化 [最大： Lv.10]
+SKILL_GOLD_RATE,金币增速提升 Lv.%d/10 (+20%%速率) | 消耗: 1 技能点,Gold Rate Boost Lv.%d/10 (+20%% rate) | Cost: 1 skill point,金貨獲得速度強化 Lv.%d/10 （+20%%速度） | 消費：スキルポイント 1
+SKILL_GOLD_RATE_MAX,金币增速提升 [已满级: Lv.10],Gold Rate Boost [MAX: Lv.10],金貨獲得速度強化 [最大： Lv.10]
+SKILL_PLAYER_POWER1,玩家技能1威力 Lv.%d/10 | 消耗: 1 技能点,Player Skill 1 Power Lv.%d/10 | Cost: 1 skill point,プレイヤースキル1威力 Lv.%d/10 | 消費：スキルポイント 1
+SKILL_PLAYER_POWER1_MAX,玩家技能1威力 [已满级: Lv.10],Player Skill 1 Power [MAX: Lv.10],プレイヤースキル1威力 [最大： Lv.10]
+SKILL_PLAYER_POWER2,玩家技能2威力 Lv.%d/10 | 消耗: 1 技能点,Player Skill 2 Power Lv.%d/10 | Cost: 1 skill point,プレイヤースキル2威力 Lv.%d/10 | 消費：スキルポイント 1
+SKILL_PLAYER_POWER2_MAX,玩家技能2威力 [已满级: Lv.10],Player Skill 2 Power [MAX: Lv.10],プレイヤースキル2威力 [最大： Lv.10]
+SKILL_UNLOCK_SOLDIER,解锁已添加兵种按钮 | 消耗: 1 技能点,Unlock troop button | Cost: 1 skill point,兵種ボタン解放 | 消費：スキルポイント 1
+SKILL_UNLOCKED,解锁已添加兵种按钮: 已解锁,Troop button unlocked,兵種ボタン：解放済み
+SKILL_UNLOCK_SKILL,解锁兵种技能[裂地击] | 消耗: 1 技能点,Unlock troop skill [Ground Slam] | Cost: 1 skill point,兵種スキル[地割れ撃]解放 | 消費：スキルポイント 1
+SKILL_LEARNED,兵种技能[裂地击]: 已习得,Troop skill [Ground Slam]: Learned,兵種スキル[地割れ撃]：習得済み
+SKILL_DAMAGE,兵种威力强化 Lv.%d/10 (+15%%攻) | 消耗: 1 技能点,Troop Power Boost Lv.%d/10 (+15%% ATK) | Cost: 1 skill point,兵種威力強化 Lv.%d/10 （+15%%攻撃） | 消費：スキルポイント 1
+SKILL_DAMAGE_MAX,兵种威力强化 [已满级: Lv.10],Troop Power Boost [MAX: Lv.10],兵種威力強化 [最大： Lv.10]
+UI_SELECT_PRODUCTION,选择持续生产：%s,Continuous production: %s,継続生産：%s
+UI_UNLOCK_FOR_GOLD,解锁 %s：%d 金币,Unlock %s: %d gold,解放 %s：%d 金
+UI_REPAIR_BASE,修复基地,Repair Base,基地修理
+UI_REPAIR_TOOLTIP,修复基地：%d 金币（+%d 生命）,Repair base: %d gold (+%d HP),基地修理：%d 金（+%d HP）
+UI_SETTINGS_TITLE,系统设置,System Settings,システム設定
+UI_LANGUAGE_LABEL,语言选择:,Language:,言語選択：
+UI_RESOLUTION_LABEL,界面与分辨率:,Display & Resolution:,画面と解像度：
+UI_RES_768,1280 × 768 (默认),1280 × 768 (Default),1280 × 768 （デフォルト）
+UI_RES_1080,1920 × 1080 (全高清),1920 × 1080 (Full HD),1920 × 1080 （フルHD)
+UI_RES_1440,2560 × 1440 (2K),2560 × 1440 (2K),2560 × 1440 （2K)
+UI_RES_FULLSCREEN,全屏模式 (Fullscreen),Fullscreen Mode,フルスクリーンモード
+UI_SKILL_TREE_TITLE,技能树与军械所,Skill Tree & Arsenal,スキルツリーと武器庫
+UI_ATTACK2_TOOLTIP,火焰扫荡,Flame Sweep,火炎掃討
+UI_ATTACK3_TOOLTIP,激光扫荡,Laser Sweep,レーザー掃討

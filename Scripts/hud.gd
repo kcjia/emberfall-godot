@@ -71,6 +71,16 @@ const GAME_OVER_MUSIC: AudioStream = preload("res://Sound/Game Over.ogg")
 @onready var settings_dialog: Window = $SettingsDialog
 @onready var lang_option: OptionButton = $SettingsDialog/VBoxContainer/HBoxLang/LangOption
 @onready var scale_option: OptionButton = $SettingsDialog/VBoxContainer/HBoxScale/ScaleOption
+@onready var lang_label: Label = $SettingsDialog/VBoxContainer/HBoxLang/Label
+@onready var scale_label: Label = $SettingsDialog/VBoxContainer/HBoxScale/Label
+
+# 语言切换时需要重设文本的静态标签（翻译来自 Localization/ocalization.csv）。
+@onready var game_over_title: Label = $GameOverDialog/PanelContainer/VBoxContainer/Title
+@onready var victory_title: Label = $VictoryPanel/VBoxContainer/Title
+@onready var victory_subtitle: Label = $VictoryPanel/VBoxContainer/SubTitle
+@onready var eco_label: Label = $SkillTreeDialog/ScrollContainer/VBoxContainer/EcoLabel
+@onready var eco_label2: Label = $SkillTreeDialog/ScrollContainer/VBoxContainer/EcoLabel2
+@onready var soldier_label: Label = $SkillTreeDialog/ScrollContainer/VBoxContainer/SoldierLabel
 
 @export var attack2_cooldown: float = 20.0
 @export var attack3_cooldown: float = 30.0
@@ -144,6 +154,7 @@ func _ready() -> void:
 	_init_settings_options()
 	_init_skill_tree_signals()
 	_refresh_button_locks()
+	_apply_language()
 
 func _process(delta: float) -> void:
 	# 倒计时并在时间结束时触发胜利状态。
@@ -247,7 +258,7 @@ func _refresh_repair_button() -> void:
 	if base != null and "current_health" in base and "max_health" in base:
 		full_hp = base.current_health >= base.max_health
 	repair_button.disabled = GameManager.player_gold < base_repair_cost or base == null or full_hp
-	repair_button.tooltip_text = "修复基地：%d 金币（+%d 生命）" % [base_repair_cost, int(base_repair_amount)]
+	repair_button.tooltip_text = tr("UI_REPAIR_TOOLTIP") % [base_repair_cost, int(base_repair_amount)]
 
 func show_game_over() -> void:
 	# 显示游戏结束弹窗并聚焦重开按钮，奖励技能点。
@@ -513,167 +524,167 @@ func _after_upgrade() -> void:
 
 func _update_skill_tree_ui() -> void:
 	var up = GameManager.upgrades
-	skill_points_label.text = "技能点: %d" % GameManager.skill_points
+	skill_points_label.text = tr("UI_SKILL_POINTS") % GameManager.skill_points
 	# 1. 击杀金币等级
 	var kill_gold_lvl: int = up["kill_gold_lvl"]
 	btn_init_gold.disabled = (kill_gold_lvl >= MAX_UPGRADE_LEVEL)
 	if kill_gold_lvl >= MAX_UPGRADE_LEVEL:
-		btn_init_gold.text = "击杀金币提升 [已满级: Lv.10]"
+		btn_init_gold.text = tr("SKILL_KILL_GOLD_MAX")
 	else:
-		btn_init_gold.text = "击杀金币提升 Lv.%d/10（每杀 %d 金）| 消耗: 1 技能点" % [kill_gold_lvl, 1 + kill_gold_lvl]
+		btn_init_gold.text = tr("SKILL_KILL_GOLD") % [kill_gold_lvl, 1 + kill_gold_lvl]
 	
 	# 2. 金币增速等级
 	var rate_lvl: int = up["gold_rate_lvl"]
 	btn_gold_rate.disabled = (rate_lvl >= MAX_UPGRADE_LEVEL)
 	if rate_lvl >= MAX_UPGRADE_LEVEL:
-		btn_gold_rate.text = "金币增速提升 [已满级: Lv.10]"
+		btn_gold_rate.text = tr("SKILL_GOLD_RATE_MAX")
 	else:
-		btn_gold_rate.text = "金币增速提升 Lv.%d/10 (+20%%速率) | 消耗: 1 技能点" % rate_lvl
+		btn_gold_rate.text = tr("SKILL_GOLD_RATE") % rate_lvl
 
 	# 4. 玩家技能1威力等级
 	var player_skill1_power_lvl: int = up["player_skill_1_power_lvl"]
 	player_skill1_power.disabled = (player_skill1_power_lvl >= MAX_UPGRADE_LEVEL)
 	if player_skill1_power_lvl >= MAX_UPGRADE_LEVEL:
-		player_skill1_power.text = "玩家技能1威力 [已满级: Lv.10]"
+		player_skill1_power.text = tr("SKILL_PLAYER_POWER1_MAX")
 	else:
-		player_skill1_power.text = "玩家技能1威力 Lv.%d/10 | 消耗: 1 技能点" % player_skill1_power_lvl
+		player_skill1_power.text = tr("SKILL_PLAYER_POWER1") % player_skill1_power_lvl
 
 	# 5. 玩家技能2威力等级
 	var player_skill2_power_lvl: int = up["player_skill_2_power_lvl"]
 	player_skill2_power.disabled = (player_skill2_power_lvl >= MAX_UPGRADE_LEVEL)
 	if player_skill2_power_lvl >= MAX_UPGRADE_LEVEL:
-		player_skill2_power.text = "玩家技能2威力 [已满级: Lv.10]"
+		player_skill2_power.text = tr("SKILL_PLAYER_POWER2_MAX")
 	else:
-		player_skill2_power.text = "玩家技能2威力 Lv.%d/10 | 消耗: 1 技能点" % player_skill2_power_lvl
+		player_skill2_power.text = tr("SKILL_PLAYER_POWER2") % player_skill2_power_lvl
 	
 	# 3. 兵种与兵种技能
 	btn_unlock_1.disabled = up["soldier_Btn1_unlocked"]
-	btn_unlock_1.text = "解锁已添加兵种按钮: 已解锁" if up["soldier_Btn1_unlocked"] else "解锁已添加兵种按钮 | 消耗: 1 技能点"
+	btn_unlock_1.text = tr("SKILL_UNLOCKED") if up["soldier_Btn1_unlocked"] else tr("SKILL_UNLOCK_SOLDIER")
 	
 	btn_skill_1.visible = up["soldier_Btn1_unlocked"]
 	btn_skill_1.disabled = up["soldier_skill1_unlocked"]
-	btn_skill_1.text = "兵种技能[裂地击]: 已习得" if up["soldier_skill1_unlocked"] else "解锁兵种技能[裂地击] | 消耗: 1 技能点"
+	btn_skill_1.text = tr("SKILL_LEARNED") if up["soldier_skill1_unlocked"] else tr("SKILL_UNLOCK_SKILL")
 	
 	btn_unlock_2.visible = up["soldier_Btn1_unlocked"]
 	btn_unlock_2.disabled = up["soldier_Btn2_unlocked"]
-	btn_unlock_2.text = "解锁已添加兵种按钮: 已解锁" if up["soldier_Btn2_unlocked"] else "解锁已添加兵种按钮 | 消耗: 1 技能点"
+	btn_unlock_2.text = tr("SKILL_UNLOCKED") if up["soldier_Btn2_unlocked"] else tr("SKILL_UNLOCK_SOLDIER")
 	
 	btn_skill_2.visible = up["soldier_Btn2_unlocked"]
 	btn_skill_2.disabled = up["soldier_skill2_unlocked"]
-	btn_skill_2.text = "兵种技能[裂地击]: 已习得" if up["soldier_skill2_unlocked"] else "解锁兵种技能[裂地击] | 消耗: 1 技能点"
+	btn_skill_2.text = tr("SKILL_LEARNED") if up["soldier_skill2_unlocked"] else tr("SKILL_UNLOCK_SKILL")
 	
 	btn_unlock_3.visible = up["soldier_Btn2_unlocked"]
 	btn_unlock_3.disabled = up["soldier_Btn3_unlocked"]
-	btn_unlock_3.text = "解锁已添加兵种按钮: 已解锁" if up["soldier_Btn3_unlocked"] else "解锁已添加兵种按钮 | 消耗: 1 技能点"
+	btn_unlock_3.text = tr("SKILL_UNLOCKED") if up["soldier_Btn3_unlocked"] else tr("SKILL_UNLOCK_SOLDIER")
 	
 	btn_skill_3.visible = up["soldier_Btn3_unlocked"]
 	btn_skill_3.disabled = up["soldier_skill3_unlocked"]
-	btn_skill_3.text = "兵种技能[裂地击]: 已习得" if up["soldier_skill3_unlocked"] else "解锁兵种技能[裂地击] | 消耗: 1 技能点"
+	btn_skill_3.text = tr("SKILL_LEARNED") if up["soldier_skill3_unlocked"] else tr("SKILL_UNLOCK_SKILL")
 	
 	btn_unlock_4.visible = up["soldier_Btn3_unlocked"]
 	btn_unlock_4.disabled = up["soldier_Btn4_unlocked"]
-	btn_unlock_4.text = "解锁已添加兵种按钮: 已解锁" if up["soldier_Btn4_unlocked"] else "解锁已添加兵种按钮 | 消耗: 1 技能点"
+	btn_unlock_4.text = tr("SKILL_UNLOCKED") if up["soldier_Btn4_unlocked"] else tr("SKILL_UNLOCK_SOLDIER")
 	
 	btn_skill_4.visible = up["soldier_Btn4_unlocked"]
 	btn_skill_4.disabled = up["soldier_skill4_unlocked"]
-	btn_skill_4.text = "兵种技能[裂地击]: 已习得" if up["soldier_skill4_unlocked"] else "解锁兵种技能[裂地击] | 消耗: 1 技能点"
+	btn_skill_4.text = tr("SKILL_LEARNED") if up["soldier_skill4_unlocked"] else tr("SKILL_UNLOCK_SKILL")
 	
 	btn_unlock_5.visible = up["soldier_Btn4_unlocked"]
 	btn_unlock_5.disabled = up["soldier_Btn5_unlocked"]
-	btn_unlock_5.text = "解锁已添加兵种按钮: 已解锁" if up["soldier_Btn5_unlocked"] else "解锁已添加兵种按钮 | 消耗: 1 技能点"
+	btn_unlock_5.text = tr("SKILL_UNLOCKED") if up["soldier_Btn5_unlocked"] else tr("SKILL_UNLOCK_SOLDIER")
 	
 	btn_skill_5.visible = up["soldier_Btn5_unlocked"]
 	btn_skill_5.disabled = up["soldier_skill5_unlocked"]
-	btn_skill_5.text = "兵种技能[裂地击]: 已习得" if up["soldier_skill5_unlocked"] else "解锁兵种技能[裂地击] | 消耗: 1 技能点"
+	btn_skill_5.text = tr("SKILL_LEARNED") if up["soldier_skill5_unlocked"] else tr("SKILL_UNLOCK_SKILL")
 	
 	btn_unlock_6.visible = up["soldier_Btn5_unlocked"]
 	btn_unlock_6.disabled = up["soldier_Btn6_unlocked"]
-	btn_unlock_6.text = "解锁已添加兵种按钮: 已解锁" if up["soldier_Btn6_unlocked"] else "解锁已添加兵种按钮 | 消耗: 1 技能点"
+	btn_unlock_6.text = tr("SKILL_UNLOCKED") if up["soldier_Btn6_unlocked"] else tr("SKILL_UNLOCK_SOLDIER")
 	
 	btn_skill_6.visible = up["soldier_Btn6_unlocked"]
 	btn_skill_6.disabled = up["soldier_skill6_unlocked"]
-	btn_skill_6.text = "兵种技能[裂地击]: 已习得" if up["soldier_skill6_unlocked"] else "解锁兵种技能[裂地击] | 消耗: 1 技能点"
+	btn_skill_6.text = tr("SKILL_LEARNED") if up["soldier_skill6_unlocked"] else tr("SKILL_UNLOCK_SKILL")
 	
 	btn_unlock_7.visible = up["soldier_Btn6_unlocked"]
 	btn_unlock_7.disabled = up["soldier_Btn7_unlocked"]
-	btn_unlock_7.text = "解锁已添加兵种按钮: 已解锁" if up["soldier_Btn7_unlocked"] else "解锁已添加兵种按钮 | 消耗: 1 技能点"
+	btn_unlock_7.text = tr("SKILL_UNLOCKED") if up["soldier_Btn7_unlocked"] else tr("SKILL_UNLOCK_SOLDIER")
 	
 	btn_skill_7.visible = up["soldier_Btn7_unlocked"]
 	btn_skill_7.disabled = up["soldier_skill7_unlocked"]
-	btn_skill_7.text = "兵种技能[裂地击]: 已习得" if up["soldier_skill7_unlocked"] else "解锁兵种技能[裂地击] | 消耗: 1 技能点"
+	btn_skill_7.text = tr("SKILL_LEARNED") if up["soldier_skill7_unlocked"] else tr("SKILL_UNLOCK_SKILL")
 	
 	btn_unlock_8.visible = up["soldier_Btn7_unlocked"]
 	btn_unlock_8.disabled = up["soldier_Btn8_unlocked"]
-	btn_unlock_8.text = "解锁已添加兵种按钮: 已解锁" if up["soldier_Btn8_unlocked"] else "解锁已添加兵种按钮 | 消耗: 1 技能点"
+	btn_unlock_8.text = tr("SKILL_UNLOCKED") if up["soldier_Btn8_unlocked"] else tr("SKILL_UNLOCK_SOLDIER")
 	
 	btn_skill_8.visible = up["soldier_Btn8_unlocked"]
 	btn_skill_8.disabled = up["soldier_skill8_unlocked"]
-	btn_skill_8.text = "兵种技能[裂地击]: 已习得" if up["soldier_skill8_unlocked"] else "解锁兵种技能[裂地击] | 消耗: 1 技能点"
+	btn_skill_8.text = tr("SKILL_LEARNED") if up["soldier_skill8_unlocked"] else tr("SKILL_UNLOCK_SKILL")
 	
 	# 4. 兵种伤害提升
 	var dmg_lvl: int = up["soldier_damage1_lvl"]
 	btn_damage_1.visible = up["soldier_Btn1_unlocked"]
 	btn_damage_1.disabled = (dmg_lvl >= MAX_UPGRADE_LEVEL)
 	if dmg_lvl >= MAX_UPGRADE_LEVEL:
-		btn_damage_1.text = "兵种威力强化 [已满级: Lv.10]"
+		btn_damage_1.text = tr("SKILL_DAMAGE_MAX")
 	else:
-		btn_damage_1.text = "兵种威力强化 Lv.%d/10 (+15%%攻) | 消耗: 1 技能点" % dmg_lvl
+		btn_damage_1.text = tr("SKILL_DAMAGE") % dmg_lvl
 	
 	var dmg_lvl2: int = up["soldier_damage2_lvl"]
 	btn_damage_2.visible = up["soldier_Btn2_unlocked"]
 	btn_damage_2.disabled = (dmg_lvl2 >= MAX_UPGRADE_LEVEL)
 	if dmg_lvl2 >= MAX_UPGRADE_LEVEL:
-		btn_damage_2.text = "兵种威力强化 [已满级: Lv.10]"
+		btn_damage_2.text = tr("SKILL_DAMAGE_MAX")
 	else:
-		btn_damage_2.text = "兵种威力强化 Lv.%d/10 (+15%%攻) | 消耗: 1 技能点" % dmg_lvl2
+		btn_damage_2.text = tr("SKILL_DAMAGE") % dmg_lvl2
 
 	var dmg_lvl3: int = up["soldier_damage3_lvl"]
 	btn_damage_3.visible = up["soldier_Btn3_unlocked"]
 	btn_damage_3.disabled = (dmg_lvl3 >= MAX_UPGRADE_LEVEL)
 	if dmg_lvl3 >= MAX_UPGRADE_LEVEL:
-		btn_damage_3.text = "兵种威力强化 [已满级: Lv.10]"
+		btn_damage_3.text = tr("SKILL_DAMAGE_MAX")
 	else:
-		btn_damage_3.text = "兵种威力强化 Lv.%d/10 (+15%%攻) | 消耗: 1 技能点" % dmg_lvl3
+		btn_damage_3.text = tr("SKILL_DAMAGE") % dmg_lvl3
 
 	var dmg_lvl4: int = up["soldier_damage4_lvl"]
 	btn_damage_4.visible = up["soldier_Btn4_unlocked"]
 	btn_damage_4.disabled = (dmg_lvl4 >= MAX_UPGRADE_LEVEL)
 	if dmg_lvl4 >= MAX_UPGRADE_LEVEL:
-		btn_damage_4.text = "兵种威力强化 [已满级: Lv.10]"
+		btn_damage_4.text = tr("SKILL_DAMAGE_MAX")
 	else:
-		btn_damage_4.text = "兵种威力强化 Lv.%d/10 (+15%%攻) | 消耗: 1 技能点" % dmg_lvl4
+		btn_damage_4.text = tr("SKILL_DAMAGE") % dmg_lvl4
 
 	var dmg_lvl5: int = up["soldier_damage5_lvl"]
 	btn_damage_5.visible = up["soldier_Btn5_unlocked"]
 	btn_damage_5.disabled = (dmg_lvl5 >= MAX_UPGRADE_LEVEL)
 	if dmg_lvl5 >= MAX_UPGRADE_LEVEL:
-		btn_damage_5.text = "兵种威力强化 [已满级: Lv.10]"
+		btn_damage_5.text = tr("SKILL_DAMAGE_MAX")
 	else:
-		btn_damage_5.text = "兵种威力强化 Lv.%d/10 (+15%%攻) | 消耗: 1 技能点" % dmg_lvl5
+		btn_damage_5.text = tr("SKILL_DAMAGE") % dmg_lvl5
 
 	var dmg_lvl6: int = up["soldier_damage6_lvl"]
 	btn_damage_6.visible = up["soldier_Btn6_unlocked"]
 	btn_damage_6.disabled = (dmg_lvl6 >= MAX_UPGRADE_LEVEL)
 	if dmg_lvl6 >= MAX_UPGRADE_LEVEL:
-		btn_damage_6.text = "兵种威力强化 [已满级: Lv.10]"
+		btn_damage_6.text = tr("SKILL_DAMAGE_MAX")
 	else:
-		btn_damage_6.text = "兵种威力强化 Lv.%d/10 (+15%%攻) | 消耗: 1 技能点" % dmg_lvl6
+		btn_damage_6.text = tr("SKILL_DAMAGE") % dmg_lvl6
 
 	var dmg_lvl7: int = up["soldier_damage7_lvl"]
 	btn_damage_7.visible = up["soldier_Btn7_unlocked"]
 	btn_damage_7.disabled = (dmg_lvl7 >= MAX_UPGRADE_LEVEL)
 	if dmg_lvl7 >= MAX_UPGRADE_LEVEL:
-		btn_damage_7.text = "兵种威力强化 [已满级: Lv.10]"
+		btn_damage_7.text = tr("SKILL_DAMAGE_MAX")
 	else:
-		btn_damage_7.text = "兵种威力强化 Lv.%d/10 (+15%%攻) | 消耗: 1 技能点" % dmg_lvl7
+		btn_damage_7.text = tr("SKILL_DAMAGE") % dmg_lvl7
 
 	var dmg_lvl8: int = up["soldier_damage8_lvl"]
 	btn_damage_8.visible = up["soldier_Btn8_unlocked"]
 	btn_damage_8.disabled = (dmg_lvl8 >= MAX_UPGRADE_LEVEL)
 	if dmg_lvl8 >= MAX_UPGRADE_LEVEL:
-		btn_damage_8.text = "兵种威力强化 [已满级: Lv.10]"
+		btn_damage_8.text = tr("SKILL_DAMAGE_MAX")
 	else:
-		btn_damage_8.text = "兵种威力强化 Lv.%d/10 (+15%%攻) | 消耗: 1 技能点" % dmg_lvl8
+		btn_damage_8.text = tr("SKILL_DAMAGE") % dmg_lvl8
 
 		
 func _refresh_button_locks() -> void:
@@ -698,9 +709,9 @@ func _refresh_button_locks() -> void:
 func _update_monster_button(button: TextureButton, monster_id: String) -> void:
 	button.disabled = false
 	if GameManager.battle_unlocked_monsters.get(monster_id, false):
-		button.tooltip_text = "选择持续生产：%s" % monster_id
+		button.tooltip_text = tr("UI_SELECT_PRODUCTION") % monster_id
 	else:
-		button.tooltip_text = "解锁 %s：%d 金币" % [monster_id, int(monster_unlock_costs.get(monster_id, 0))]
+		button.tooltip_text = tr("UI_UNLOCK_FOR_GOLD") % [monster_id, int(monster_unlock_costs.get(monster_id, 0))]
 
 # ----------------- 设置与多语言逻辑 -----------------
 func _open_settings() -> void:
@@ -726,16 +737,46 @@ func _init_settings_options() -> void:
 			2: GameManager.current_language = "ja"
 		GameManager.apply_settings()
 		GameManager.save_local_config()
+		_apply_language()
 	)
 
-	scale_option.clear()
-	scale_option.add_item("1280 × 768 (默认)", 0)
-	scale_option.add_item("1920 × 1080 (全高清)", 1)
-	scale_option.add_item("2560 × 1440 (2K)", 2)
-	scale_option.add_item("全屏模式 (Fullscreen)", 3)
-	
-	scale_option.select(GameManager.current_window_mode)
+	_refresh_scale_option_items()
 	scale_option.item_selected.connect(func(idx):
 		GameManager.apply_resolution(idx)
 		GameManager.save_local_config()
 	)
+
+# 根据当前语言刷新所有界面静态文本（翻译来自 Localization/ocalization.csv）。
+# 之前语言切换只改了存档里的语言值、没有重设任何文本，所以界面一直停留在中文。
+func _apply_language() -> void:
+	skill_tree_btn.text = tr("UI_SKILL_TREE")
+	settings_btn.text = tr("UI_SETTINGS")
+	repair_button.text = tr("UI_REPAIR_BASE")
+	attack2_button.tooltip_text = tr("UI_ATTACK2_TOOLTIP")
+	attack3_button.tooltip_text = tr("UI_ATTACK3_TOOLTIP")
+	settings_dialog.title = tr("UI_SETTINGS_TITLE")
+	lang_label.text = tr("UI_LANGUAGE_LABEL")
+	scale_label.text = tr("UI_RESOLUTION_LABEL")
+	_refresh_scale_option_items()
+	skill_tree_dialog.title = tr("UI_SKILL_TREE_TITLE")
+	eco_label.text = tr("UI_ECO_SECTION")
+	eco_label2.text = tr("UI_SKILL_SECTION")
+	soldier_label.text = tr("UI_SOLDIER_SECTION")
+	game_over_title.text = tr("UI_GAME_OVER")
+	restart_button.text = tr("UI_RESTART")
+	quit_button.text = tr("UI_QUIT")
+	victory_title.text = tr("UI_VICTORY")
+	victory_subtitle.text = tr("UI_VICTORY_DESC")
+	victory_restart_btn.text = tr("UI_RESTART")
+	_update_skill_tree_ui()
+	_refresh_button_locks()
+	_refresh_repair_button()
+
+# 按当前语言重建分辨率选项（切换语言时选项文本也跟着翻译）。
+func _refresh_scale_option_items() -> void:
+	scale_option.clear()
+	scale_option.add_item(tr("UI_RES_768"), 0)
+	scale_option.add_item(tr("UI_RES_1080"), 1)
+	scale_option.add_item(tr("UI_RES_1440"), 2)
+	scale_option.add_item(tr("UI_RES_FULLSCREEN"), 3)
+	scale_option.select(GameManager.current_window_mode)

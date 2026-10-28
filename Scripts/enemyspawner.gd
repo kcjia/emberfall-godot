@@ -48,10 +48,17 @@ var spawning_enabled: bool = false
 
 # 【生产上限】：玩家与系统同时在场生产的兵种种类上限均为 3 种。
 # 玩家：按钮只作生产切换（加入/切换生产队列），点按不直接出兵；
-# 系统：随时间逐步解锁 tier，0 秒一档、60 秒两档、180 秒三档全开，不再高档替换低档。
+# 系统：12 种敌人按 tier 顺序排成轮换表，同时最多 3 种在场生产，
+#   随时间逐步替换（满 3 种时新种加入、最早的退场，退场过的本局不再回来），
+#   后期固定为最后 3 种强力兵种。轮换间隔 100 秒。
 # 敌方基地半血被动召唤走自己的三兵种间隔，不受此限制。
 const MAX_ACTIVE_SPAWN_TYPES: int = 3
 var active_player_spawn_types: Array[String] = []
+const MAX_ACTIVE_SYSTEM_TYPES: int = 3
+const SYSTEM_ROTATION_INTERVAL: float = 100.0
+var system_roster: Array[Dictionary] = []
+var system_active_keys: Array[String] = []
+var system_next_rotation_time: float = SYSTEM_ROTATION_INTERVAL
 
 # 启动敌人生成计时器并连接 HUD 信号。
 func _ready() -> void:
@@ -66,6 +73,8 @@ func _ready() -> void:
 		if not hud.player_attack_requested.is_connected(_on_player_attack_requested):
 			hud.player_attack_requested.connect(_on_player_attack_requested)
 	_initialize_player_schedule()
+	_build_system_roster()
+	_initialize_system_active()
 
 # 检查 Inspector 中拖入的玩家单位场景是否完整且类型正确。
 func _validate_monster_scenes() -> void:
@@ -182,32 +191,77 @@ func _cast_warlock_fire() -> void:
 		if fire_effect.has_method("play_effect"):
 			fire_effect.play_effect(damage, enemy)
 
-# 按解锁时间持续生成系统敌人：已解锁的 tier 全部持续生成，
-# 0 秒只有一档、60 秒两档、180 秒三档全开，不再高档替换低档。
-# tier 只有三档，天然就是“最多三种”。
-func _process_system_schedule() -> void:
-	_process_system_group(monster_num1, monster_num1_intervals, 0.0, "tier_1")
-	if game_time >= monster_num2_unlock_time:
-		_process_system_group(monster_num2, monster_num2_intervals, monster_num2_unlock_time, "tier_2")
-	if game_time >= monster_num3_unlock_time:
-		_process_system_group(monster_num3, monster_num3_intervals, monster_num3_unlock_time, "tier_3")
+# 按 tier 顺序把三档敌人排成一张轮换表（解锁时间取 Inspector 配置）。
+func _build_system_roster() -> void:
+	system_roster.clear()
+	_append_system_group(monster_num1, monster_num1_intervals, 0.0, "tier_1")
+	_append_system_group(monster_num2, monster_num2_intervals, monster_num2_unlock_time, "tier_2")
+	_append_system_group(monster_num3, monster_num3_intervals, monster_num3_unlock_time, "tier_3")
 
-
-# 处理一个敌人数组内每个条目的独立生成时间。
-func _process_system_group(scenes: Array[PackedScene], intervals: Array[float], unlock_time: float, group_id: String) -> void:
-	if game_time < unlock_time or not enemy_point:
-		return
+func _append_system_group(scenes: Array[PackedScene], intervals: Array[float], unlock_time: float, group_id: String) -> void:
 	for index in scenes.size():
 		var scene := scenes[index]
 		if scene == null:
 			continue
-		var schedule_key := "%s_%d" % [group_id, index]
-		var next_spawn_time: float = system_next_spawn_times.get(schedule_key, game_time)
+		system_roster.append({
+			"scene": scene,
+			"interval": intervals[index] if index < intervals.size() else 5.0,
+			"unlock_time": unlock_time,
+			"key": "%s_%d" % [group_id, index],
+			"activated": false,
+		})
+
+# 开局激活轮换表前 3 个已解锁的兵种（开局只有一档可解锁）。
+func _initialize_system_active() -> void:
+	system_active_keys.clear()
+	for track in system_roster:
+		if system_active_keys.size() >= MAX_ACTIVE_SYSTEM_TYPES:
+			break
+		if game_time < track["unlock_time"]:
+			continue
+		system_active_keys.append(track["key"])
+		track["activated"] = true
+
+# 按轮换表持续生成在场生产队列中的系统敌人（同时最多 3 种）。
+func _process_system_schedule() -> void:
+	if not enemy_point:
+		return
+	_update_system_active_set()
+	for track in system_roster:
+		if not system_active_keys.has(track["key"]):
+			continue
+		var next_spawn_time: float = system_next_spawn_times.get(track["key"], game_time)
 		if game_time < next_spawn_time:
 			continue
-		_spawn_system_monster(scene)
-		var interval := intervals[index] if index < intervals.size() else 2.0
-		system_next_spawn_times[schedule_key] = game_time + maxf(interval, 0.1)
+		_spawn_system_monster(track["scene"])
+		system_next_spawn_times[track["key"]] = game_time + maxf(track["interval"], 0.1)
+
+# 维护系统生产队列：未满 3 种时立即补满已解锁的下一个；
+# 已满 3 种且到轮换时间时，最早的退场、下一个加入（退场过的不再回来）。
+func _update_system_active_set() -> void:
+	var next_track = _find_next_system_track()
+	if next_track == null:
+		return
+	if system_active_keys.size() < MAX_ACTIVE_SYSTEM_TYPES:
+		system_active_keys.append(next_track["key"])
+		next_track["activated"] = true
+		return
+	if game_time >= system_next_rotation_time:
+		var retired_key = system_active_keys.pop_front()
+		system_next_spawn_times.erase(retired_key)
+		system_active_keys.append(next_track["key"])
+		next_track["activated"] = true
+		system_next_rotation_time = game_time + SYSTEM_ROTATION_INTERVAL
+
+# 按轮换表顺序找下一个从未激活且已解锁的兵种，找不到返回 null。
+func _find_next_system_track():
+	for track in system_roster:
+		if track["activated"]:
+			continue
+		if game_time < track["unlock_time"]:
+			continue
+		return track
+	return null
 
 # 在系统出生点实例化一个敌方单位。
 func _spawn_system_monster(scene: PackedScene) -> void:

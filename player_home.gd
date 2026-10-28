@@ -33,6 +33,13 @@ var attack_sequence_id: int = 0
 @onready var anim_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 @onready var progress_bar: ProgressBar = $ProgressBar
+
+# 血条表现：主条按血量变色（绿→黄→红）+ 白色残影条 + 受击闪白 + 飘字。
+var _base_fill_stylebox: StyleBoxFlat = null
+var _base_ghost_bar: ProgressBar = null
+var _base_flash_tween: Tween = null
+var _base_damage_label: Label = null
+var _base_damage_tween: Tween = null
 @onready var laser_skill = get_node_or_null("LaserSkill")
 
 @onready var attack_areas: Dictionary = {
@@ -70,7 +77,8 @@ func _on_start_finished(_anim_name: StringName) -> void:
 # 按 Attack1 近距离优先、Attack2 中距离次之的规则自动攻击。
 # 锁定目标不在 Attack1 范围时，也在 Attack2 范围内找最近敌人补位，
 # 避免基地因锁定目标在远处而对已进入中距离的敌人无动于衷。
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	_update_base_ghost_bar(delta)
 	if not can_attack:
 		return
 
@@ -190,6 +198,9 @@ func take_damage(amount: float) -> void:
 	if progress_bar:
 		progress_bar.value = current_health
 	health_changed.emit(current_health, max_health)
+	_update_base_bar_color()
+	_flash_base_hit()
+	_show_base_damage_number(amount)
 	if current_health <= 0:
 		_die()
 
@@ -201,6 +212,7 @@ func heal(amount: float) -> void:
 	if progress_bar:
 		progress_bar.value = current_health
 	health_changed.emit(current_health, max_health)
+	_update_base_bar_color()
 
 # 停止技能、广播死亡并销毁基地。
 func _die() -> void:
@@ -222,6 +234,104 @@ func _init_progress_bar() -> void:
 		progress_bar.min_value = 0.0
 		progress_bar.max_value = max_health
 		progress_bar.value = current_health
+		_setup_base_bar_juice()
+
+func _setup_base_bar_juice() -> void:
+	if not is_instance_valid(progress_bar):
+		return
+	var orig_fill := progress_bar.get_theme_stylebox("fill")
+	if orig_fill is StyleBoxFlat:
+		_base_fill_stylebox = orig_fill.duplicate() as StyleBoxFlat
+	else:
+		_base_fill_stylebox = StyleBoxFlat.new()
+	progress_bar.add_theme_stylebox_override("fill", _base_fill_stylebox)
+	_base_ghost_bar = ProgressBar.new()
+	_base_ghost_bar.position = progress_bar.position
+	_base_ghost_bar.size = progress_bar.size
+	_base_ghost_bar.min_value = 0.0
+	_base_ghost_bar.max_value = max_health
+	_base_ghost_bar.value = current_health
+	_base_ghost_bar.show_percentage = false
+	var ghost_bg := StyleBoxFlat.new()
+	ghost_bg.bg_color = Color(0.0, 0.0, 0.0, 0.0)
+	_base_ghost_bar.add_theme_stylebox_override("background", ghost_bg)
+	var ghost_fill := StyleBoxFlat.new()
+	ghost_fill.bg_color = Color(1.0, 1.0, 1.0, 0.9)
+	_base_ghost_bar.add_theme_stylebox_override("fill", ghost_fill)
+	add_child(_base_ghost_bar)
+	move_child(_base_ghost_bar, progress_bar.get_index())
+	_update_base_bar_color()
+
+func _update_base_bar_color() -> void:
+	if _base_fill_stylebox == null:
+		return
+	var hp_ratio := 0.0
+	if max_health > 0:
+		hp_ratio = clampf(current_health / max_health, 0.0, 1.0)
+	if hp_ratio > 0.5:
+		_base_fill_stylebox.bg_color = Color(0.3, 0.85, 0.4)
+	elif hp_ratio > 0.25:
+		_base_fill_stylebox.bg_color = Color(1.0, 0.8, 0.2)
+	else:
+		_base_fill_stylebox.bg_color = Color(1.0, 0.25, 0.2)
+
+func _update_base_ghost_bar(delta: float) -> void:
+	if not is_instance_valid(_base_ghost_bar) or not is_instance_valid(progress_bar):
+		return
+	if progress_bar.value > _base_ghost_bar.value:
+		_base_ghost_bar.value = progress_bar.value
+	else:
+		_base_ghost_bar.value = move_toward(_base_ghost_bar.value, progress_bar.value, max_health * delta * 0.5)
+
+func _flash_base_hit() -> void:
+	if not is_instance_valid(anim_sprite):
+		return
+	if _base_flash_tween and _base_flash_tween.is_running():
+		_base_flash_tween.kill()
+	anim_sprite.modulate = Color(2.5, 2.5, 2.5, 1.0)
+	_base_flash_tween = create_tween()
+	_base_flash_tween.tween_property(anim_sprite, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.15)
+
+# 基地受击飘字（与单位飘字同款分档：小黄、中橙、大红放大）。
+func _show_base_damage_number(amount: float) -> void:
+	if _base_damage_label == null:
+		_base_damage_label = Label.new()
+		_base_damage_label.position = Vector2(-25.0, -70.0)
+		_base_damage_label.add_theme_font_size_override("font_size", 20)
+		_base_damage_label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 1.0))
+		_base_damage_label.add_theme_constant_override("outline_size", 3)
+		_base_damage_label.visible = false
+		add_child(_base_damage_label)
+	if _base_damage_tween and _base_damage_tween.is_running():
+		_base_damage_tween.kill()
+	var dmg_color := Color(1.0, 0.85, 0.4, 1.0)
+	var pop_scale := Vector2(1.1, 1.1)
+	var rise := 24.0
+	var fade_time := 0.5
+	if amount >= 100:
+		dmg_color = Color(1.0, 0.25, 0.2, 1.0)
+		pop_scale = Vector2(1.5, 1.5)
+		rise = 36.0
+		fade_time = 0.7
+	elif amount >= 30:
+		dmg_color = Color(1.0, 0.6, 0.15, 1.0)
+		pop_scale = Vector2(1.25, 1.25)
+	_base_damage_label.text = "-%d" % int(amount)
+	_base_damage_label.modulate = dmg_color
+	_base_damage_label.visible = true
+	var base_y: float = -70.0
+	var random_x: float = randf_range(-31.0, -19.0)
+	_base_damage_label.position = Vector2(random_x, base_y)
+	_base_damage_label.scale = Vector2(0.8, 0.8)
+	_base_damage_tween = create_tween()
+	_base_damage_tween.set_parallel(true)
+	_base_damage_tween.tween_property(_base_damage_label, "position:y", base_y - rise, fade_time).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	_base_damage_tween.tween_property(_base_damage_label, "scale", pop_scale, 0.12)
+	_base_damage_tween.tween_property(_base_damage_label, "modulate:a", 0.0, fade_time).set_delay(0.15)
+	_base_damage_tween.chain().tween_callback(func():
+		if is_instance_valid(_base_damage_label):
+			_base_damage_label.visible = false
+	)
 
 # ----------------- 攻击判定开关 -----------------
 # 启用所有攻击范围的重叠检测。
