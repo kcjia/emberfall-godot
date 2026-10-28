@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://bmkir3vvox8q4"]
+
+[ext_resource type="Texture2D" uid="uid://2tm382a7fxnl" path="res://Image/Background/荒野1.jpg" id="1_vg5va"]
+
+[node name="Node2D" type="Node2D" unique_id=632600705]
+
+[node name="荒野1" type="Sprite2D" parent="." unique_id=901100708]
+position = Vector2(609, 0)
+texture = ExtResource("1_vg5va")

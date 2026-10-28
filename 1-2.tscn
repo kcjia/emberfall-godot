@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://c2trtmxivapgb"]
+
+[ext_resource type="Texture2D" uid="uid://dougq06mu2u3n" path="res://Image/Background/荒废城市.jpg" id="1_3tjhq"]
+
+[node name="Node2D" type="Node2D" unique_id=1005514672]
+
+[node name="荒废城市" type="Sprite2D" parent="." unique_id=2070607111]
+position = Vector2(705, 384)
+texture = ExtResource("1_3tjhq")

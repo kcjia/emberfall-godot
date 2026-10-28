@@ -1,0 +1,55 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="横版造兵"
+run/main_scene="uid://ckobxs1mckdx3"
+config/features=PackedStringArray("4.6", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+DialogueManager="*uid://cwg8c0byq38w"
+GameManager="*uid://dwxwgmi1cjhxc"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=768
+window/size/resizable=false
+window/size/always_on_top=true
+window/size/maximize_disabled=true
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/vsync/vsync_mode=0
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://Localization/ocalization.en.translation", "res://Localization/ocalization.ja.translation", "res://Localization/ocalization.zh.translation")
+
+[layer_names]
+
+2d_physics/layer_1="地面"
+2d_physics/layer_2="玩家"
+2d_physics/layer_3="敌人"
+2d_physics/layer_4="路障"
+2d_physics/layer_5="玩家基地"
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+rendering_device/driver.windows="d3d12"
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

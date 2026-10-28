@@ -1,0 +1,12 @@
+keys,zh,en,ja
+UI_GAME_OVER,游戏结束,Game Over,ゲームオーバー
+UI_RESTART,重新开始,Restart,やり直す
+UI_QUIT,结束游戏,Quit,終了
+UI_SKILL_TREE,技能树,Skill Tree,スキルツリー
+UI_SETTINGS,设置,Settings,設定
+UI_VICTORY,战役胜利！,Victory!,勝利！
+UI_VICTORY_DESC,坚持防守 30 分钟，阵线已稳固！,Held the line for 30 minutes!,30分間防衛成功！
+UI_GAME_START,开始游戏,Start Game,
+UI_COIN,金币: %d,Gold: %d,ゴールド: %d
+SKILL_INIT_GOLD,初始金币 Lv.%d,Init Gold Lv.%d,初期ゴールド Lv.%d
+SKILL_MAX,[最大等级],[Max Level],[最大レベル]

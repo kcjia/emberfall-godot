@@ -1,0 +1,52 @@
+[gd_scene format=3 uid="uid://dncu57cy1l3dt"]
+
+[ext_resource type="Texture2D" uid="uid://cr1avfue3bh32" path="res://Image/PlayerImage/Priest.png" id="1_hf4n7"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kpj0h"]
+atlas = ExtResource("1_hf4n7")
+region = Rect2(0, 700, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gnt6r"]
+atlas = ExtResource("1_hf4n7")
+region = Rect2(100, 700, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8b0t1"]
+atlas = ExtResource("1_hf4n7")
+region = Rect2(200, 700, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nj1u6"]
+atlas = ExtResource("1_hf4n7")
+region = Rect2(300, 700, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_te1qo"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kpj0h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gnt6r")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8b0t1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nj1u6")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_in2bn"]
+size = Vector2(22, 9)
+
+[node name="Area2D" type="Area2D" unique_id=1851214836]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=544927853]
+sprite_frames = SubResource("SpriteFrames_te1qo")
+frame_progress = 0.51713467
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2019665723]
+position = Vector2(1, 7.5)
+shape = SubResource("RectangleShape2D_in2bn")

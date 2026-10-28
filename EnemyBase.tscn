@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://sdbac0la0e5f"]
+
+[ext_resource type="Script" uid="uid://0jj37a81ejot" path="res://Scripts/enemy_base.gd" id="1_gjhpl"]
+[ext_resource type="PackedScene" uid="uid://cp3nf21y6b3r4" path="res://Scene/speech_bubble.tscn" id="2_u4ydw"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_u4ydw"]
+radius = 107.696335
+
+[node name="CharacterBody2D" type="CharacterBody2D" unique_id=1983484150]
+scale = Vector2(2, 2)
+collision_layer = 2
+collision_mask = 15
+script = ExtResource("1_gjhpl")
+
+[node name="CurrentHealth" type="ProgressBar" parent="." unique_id=804942151]
+self_modulate = Color(1, 0, 0, 1)
+offset_left = -6.0
+offset_top = -10.0
+offset_right = 6.0
+offset_bottom = -6.0
+localize_numeral_system = false
+show_percentage = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1427630048]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=11406324]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=910956313]
+
+[node name="AttackArea" type="Area2D" parent="." unique_id=706038846]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=1649134205]
+
+[node name="Attack2Area" type="Area2D" parent="." unique_id=936752056]
+collision_layer = 2
+collision_mask = 15
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Attack2Area" unique_id=1176160445]
+
+[node name="Attack3Area" type="Area2D" parent="." unique_id=1057617056]
+collision_mask = 15
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Attack3Area" unique_id=1138898923]
+
+[node name="DetectionArea" type="Area2D" parent="." unique_id=1433089138]
+collision_layer = 2
+collision_mask = 15
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea" unique_id=1339386026]
+shape = SubResource("CircleShape2D_u4ydw")
+
+[node name="DamageLabel" type="Label" parent="." unique_id=1145841001]
+visible = false
+z_index = 100
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="SpeechBubble" parent="." unique_id=686591433 instance=ExtResource("2_u4ydw")]

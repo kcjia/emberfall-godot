@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://cp3nf21y6b3r4"]
+
+[ext_resource type="Script" uid="uid://daxr3q55lc6r3" path="res://Scripts/speech_bubble.gd" id="1_n0hrq"]
+
+[node name="SpeechBubble" type="Node2D" unique_id=686591433]
+script = ExtResource("1_n0hrq")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="." unique_id=886084338]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="." unique_id=375084148]
+offset_right = 40.0
+offset_bottom = 23.0

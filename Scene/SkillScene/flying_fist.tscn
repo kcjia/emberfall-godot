@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://vu13tuuclbhu"]
+
+[ext_resource type="Script" uid="uid://dotabrbs5cwk4" path="res://Scripts/flying_fist.gd" id="1_rdhxb"]
+[ext_resource type="Texture2D" uid="uid://bifu8itrknbql" path="res://Image/arm_projectile_glowing.png" id="1_ruydq"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2e8ed"]
+atlas = ExtResource("1_ruydq")
+region = Rect2(50, 25, 50, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0enfk"]
+atlas = ExtResource("1_ruydq")
+region = Rect2(150, 25, 50, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iscyw"]
+atlas = ExtResource("1_ruydq")
+region = Rect2(250, 25, 50, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dgk4m"]
+atlas = ExtResource("1_ruydq")
+region = Rect2(50, 125, 50, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qnk2w"]
+atlas = ExtResource("1_ruydq")
+region = Rect2(150, 125, 50, 25)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ohp72"]
+atlas = ExtResource("1_ruydq")
+region = Rect2(250, 125, 50, 25)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_rdhxb"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2e8ed")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0enfk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iscyw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dgk4m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qnk2w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ohp72")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5wd5w"]
+size = Vector2(35, 14.333334)
+
+[node name="FlyingFist" type="Area2D" unique_id=560819452]
+z_index = 2
+scale = Vector2(3, 3)
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("1_rdhxb")
+speed = 350.0
+damage = 1500
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=221593021]
+sprite_frames = SubResource("SpriteFrames_rdhxb")
+frame_progress = 0.52257484
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=1343869004]
+position = Vector2(-1, 0)
+rect = Rect2(-14, -7.3333335, 15, 14.333334)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1121732112]
+position = Vector2(2.5, -0.5000002)
+shape = SubResource("RectangleShape2D_5wd5w")

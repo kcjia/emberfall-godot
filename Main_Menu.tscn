@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://ckobxs1mckdx3"]
+
+[ext_resource type="Script" uid="uid://c2kl86vshjhus" path="res://Scripts/main_menu.gd" id="1_m625n"]
+[ext_resource type="Texture2D" uid="uid://b3jrkg85msgld" path="res://Image/Background/Background layer.png" id="2_gtid3"]
+[ext_resource type="Texture2D" uid="uid://kxuwny5y2bq" path="res://Image/Background/Background preview.png" id="3_dnfjo"]
+
+[node name="Control" type="Control" unique_id=56861633]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_m625n")
+game_scene_path = "uid://d0pdj681koxdt"
+
+[node name="TextureRect2" type="TextureRect" parent="." unique_id=725926762]
+layout_mode = 0
+offset_right = 1282.0
+offset_bottom = 647.0
+texture = ExtResource("2_gtid3")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=171471558]
+layout_mode = 0
+offset_top = 213.0
+offset_right = 1281.0
+offset_bottom = 768.0
+texture = ExtResource("3_dnfjo")
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1190776109]
+layout_mode = 0
+offset_right = 1281.0
+offset_bottom = 210.0
+
+[node name="Label" type="Label" parent="PanelContainer" unique_id=514893135]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "冲突"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PanelContainer2" type="PanelContainer" parent="." unique_id=1261383752]
+layout_mode = 0
+offset_left = 372.0
+offset_top = 314.0
+offset_right = 896.0
+offset_bottom = 537.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer2" unique_id=1833996464]
+layout_mode = 2
+alignment = 1
+
+[node name="StartButton" type="Button" parent="PanelContainer2/VBoxContainer" unique_id=1380241941]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_GAME_START"
+
+[node name="QuitButton" type="Button" parent="PanelContainer2/VBoxContainer" unique_id=2039412664]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_QUIT"

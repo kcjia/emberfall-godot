@@ -1,0 +1,82 @@
+[gd_scene format=3 uid="uid://ba0aq5p17dacc"]
+
+[ext_resource type="Texture2D" uid="uid://ce8clo8htd4ly" path="res://Image/Enemy/Warlock.png" id="1_or87l"]
+[ext_resource type="Script" uid="uid://bn53satgbpgn" path="res://Scripts/warlock_fire.gd" id="2_warlock_fire"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jql0s"]
+atlas = ExtResource("1_or87l")
+region = Rect2(0, 500, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_72tms"]
+atlas = ExtResource("1_or87l")
+region = Rect2(100, 500, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kd7ol"]
+atlas = ExtResource("1_or87l")
+region = Rect2(200, 500, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qlnbk"]
+atlas = ExtResource("1_or87l")
+region = Rect2(300, 500, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_15nm1"]
+atlas = ExtResource("1_or87l")
+region = Rect2(400, 500, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kteqm"]
+atlas = ExtResource("1_or87l")
+region = Rect2(500, 500, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_booh4"]
+atlas = ExtResource("1_or87l")
+region = Rect2(600, 500, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ere8i"]
+atlas = ExtResource("1_or87l")
+region = Rect2(700, 500, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_l620n"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jql0s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_72tms")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kd7ol")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qlnbk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_15nm1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kteqm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_booh4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ere8i")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_or87l"]
+size = Vector2(28, 55)
+
+[node name="Area2D" type="Area2D" unique_id=1151658501]
+script = ExtResource("2_warlock_fire")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=605761396]
+sprite_frames = SubResource("SpriteFrames_l620n")
+frame_progress = 0.96858793
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1883518391]
+position = Vector2(0, -17.5)
+shape = SubResource("RectangleShape2D_or87l")

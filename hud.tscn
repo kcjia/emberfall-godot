@@ -1,0 +1,449 @@
+[gd_scene format=3 uid="uid://bmj85om0f6kgl"]
+
+[ext_resource type="Script" uid="uid://dw2dnyeouvvw" path="res://Scripts/hud.gd" id="1_64ctp"]
+[ext_resource type="Texture2D" uid="uid://eiykafd6r3ee" path="res://Image/Coin.png" id="2_8sq4i"]
+[ext_resource type="Texture2D" uid="uid://dngowjf508sj4" path="res://Image/PlayerImage/Armored Axeman.png" id="3_amv7k"]
+[ext_resource type="Texture2D" uid="uid://dlypgg4j6s6t4" path="res://Image/PlayerImage/Knight Templar.png" id="4_1fv7p"]
+[ext_resource type="Texture2D" uid="uid://diwh7r8bfwp27" path="res://Image/PlayerImage/Knight.png" id="5_4u2vk"]
+[ext_resource type="Script" uid="uid://dbixv56jdxyex" path="res://Scripts/skill_cooldown_overlay.gd" id="5_cooldown"]
+[ext_resource type="Texture2D" uid="uid://c13lqyxuxeqkg" path="res://Image/PlayerImage/Lancer.png" id="6_4q17s"]
+[ext_resource type="Texture2D" uid="uid://oafeksy84i82" path="res://Image/PlayerImage/Archer.png" id="7_2d608"]
+[ext_resource type="Texture2D" uid="uid://dhufphlaeef8i" path="res://Image/PlayerImage/Wizard.png" id="8_w71nf"]
+[ext_resource type="Texture2D" uid="uid://ce8clo8htd4ly" path="res://Image/Enemy/Warlock.png" id="9_615i1"]
+[ext_resource type="Texture2D" uid="uid://1kqjtkyh0tkq" path="res://Image/Laser_sheet.png" id="11_pw7dr"]
+[ext_resource type="Texture2D" uid="uid://7gtt2xcg63qf" path="res://Image/PlayerImage/Swordsman.png" id="12_4u2vk"]
+[ext_resource type="Texture2D" uid="uid://cr1avfue3bh32" path="res://Image/PlayerImage/Priest.png" id="13_4q17s"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8w6vd"]
+atlas = ExtResource("9_615i1")
+region = Rect2(424, 504, 56, 56)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_shnbk"]
+atlas = ExtResource("11_pw7dr")
+region = Rect2(25, 606, 56, 56)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ap7yk"]
+atlas = ExtResource("3_amv7k")
+region = Rect2(32, 24, 40, 40)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5kc73"]
+atlas = ExtResource("4_1fv7p")
+region = Rect2(32, 24, 40, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bp16l"]
+atlas = ExtResource("5_4u2vk")
+region = Rect2(32, 24, 40, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5iihh"]
+atlas = ExtResource("6_4q17s")
+region = Rect2(32, 16, 40, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rgb5v"]
+atlas = ExtResource("7_2d608")
+region = Rect2(32, 24, 40, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2d608"]
+atlas = ExtResource("8_w71nf")
+region = Rect2(29, 23, 41, 46)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w71nf"]
+atlas = ExtResource("12_4u2vk")
+region = Rect2(32, 23, 42, 45)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_np8ax"]
+atlas = ExtResource("13_4q17s")
+region = Rect2(32, 24, 40, 48)
+
+[node name="HUD" type="CanvasLayer" unique_id=2098210901]
+process_mode = 3
+script = ExtResource("1_64ctp")
+
+[node name="GameOverDialog" type="Control" parent="." unique_id=1134710826]
+process_mode = 3
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dimmer" type="ColorRect" parent="GameOverDialog" unique_id=1804024950]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.65)
+
+[node name="PanelContainer" type="PanelContainer" parent="GameOverDialog" unique_id=1684245350]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -100.0
+offset_right = 150.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GameOverDialog/PanelContainer" unique_id=1794471206]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="Title" type="Label" parent="GameOverDialog/PanelContainer/VBoxContainer" unique_id=151668375]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "游戏结束"
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="GameOverDialog/PanelContainer/VBoxContainer" unique_id=1486739313]
+layout_mode = 2
+text = "重新开始"
+
+[node name="QuitButton" type="Button" parent="GameOverDialog/PanelContainer/VBoxContainer" unique_id=1298315562]
+layout_mode = 2
+text = "结束游戏"
+
+[node name="VictoryPanel" type="Panel" parent="." unique_id=987654321]
+process_mode = 3
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -120.0
+offset_right = 200.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VictoryPanel" unique_id=1320912040]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="VictoryPanel/VBoxContainer" unique_id=1739810740]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "战役胜利！"
+horizontal_alignment = 1
+
+[node name="SubTitle" type="Label" parent="VictoryPanel/VBoxContainer" unique_id=877005453]
+layout_mode = 2
+text = "坚持防守 30 分钟，阵线已稳固！"
+horizontal_alignment = 1
+
+[node name="VictoryRestartBtn" type="Button" parent="VictoryPanel/VBoxContainer" unique_id=1076753649]
+layout_mode = 2
+text = "再次征战"
+
+[node name="Up" type="PanelContainer" parent="." unique_id=489695637]
+offset_right = 1280.0
+offset_bottom = 46.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Up" unique_id=417152304]
+layout_mode = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Up/HBoxContainer" unique_id=1095484809]
+position = Vector2(22, 29.000002)
+scale = Vector2(2.78125, 2.78125)
+texture = ExtResource("2_8sq4i")
+hframes = 12
+
+[node name="GoldLabel" type="Label" parent="Up/HBoxContainer/Sprite2D" unique_id=551726097]
+texture_filter = 1
+offset_left = 8.629213
+offset_top = -12.224714
+offset_right = 37.752808
+offset_bottom = 10.775286
+theme_override_font_sizes/font_size = 12
+text = "0"
+vertical_alignment = 1
+
+[node name="GoldTimer" type="Timer" parent="Up/HBoxContainer/Sprite2D" unique_id=504696998]
+wait_time = 0.5
+
+[node name="Spacer" type="Control" parent="Up/HBoxContainer" unique_id=502106844]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="TimerLabel" type="Label" parent="Up/HBoxContainer" unique_id=199637793]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "30:00"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Attack2Button" type="TextureButton" parent="Up/HBoxContainer" unique_id=1628698891]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "火焰扫荡"
+texture_normal = SubResource("AtlasTexture_8w6vd")
+
+[node name="CooldownOverlay" type="Control" parent="Up/HBoxContainer/Attack2Button" unique_id=1756598942]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("5_cooldown")
+
+[node name="Attack3Button" type="TextureButton" parent="Up/HBoxContainer" unique_id=1325599601]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "激光扫荡"
+texture_normal = SubResource("AtlasTexture_shnbk")
+
+[node name="CooldownOverlay" type="Control" parent="Up/HBoxContainer/Attack3Button" unique_id=1321078096]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("5_cooldown")
+
+[node name="SkillTreeButton" type="Button" parent="Up/HBoxContainer" unique_id=501062135]
+layout_mode = 2
+text = "技能树"
+
+[node name="SettingsButton" type="Button" parent="Up/HBoxContainer" unique_id=2053131370]
+layout_mode = 2
+text = "设置"
+
+[node name="Down" type="PanelContainer" parent="." unique_id=1829258445]
+offset_top = 712.0
+offset_right = 1280.0
+offset_bottom = 768.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Down" unique_id=1714741872]
+layout_mode = 2
+
+[node name="MonsterButton1" type="TextureButton" parent="Down/HBoxContainer" unique_id=1230163873]
+unique_name_in_owner = true
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_ap7yk")
+
+[node name="MonsterButton2" type="TextureButton" parent="Down/HBoxContainer" unique_id=441215069]
+unique_name_in_owner = true
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_5kc73")
+
+[node name="MonsterButton3" type="TextureButton" parent="Down/HBoxContainer" unique_id=1924372876]
+unique_name_in_owner = true
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_bp16l")
+
+[node name="MonsterButton4" type="TextureButton" parent="Down/HBoxContainer" unique_id=2129877534]
+unique_name_in_owner = true
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_5iihh")
+
+[node name="MonsterButton5" type="TextureButton" parent="Down/HBoxContainer" unique_id=270199292]
+unique_name_in_owner = true
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_rgb5v")
+
+[node name="MonsterButton6" type="TextureButton" parent="Down/HBoxContainer" unique_id=1795856604]
+unique_name_in_owner = true
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_2d608")
+
+[node name="MonsterButton7" type="TextureButton" parent="Down/HBoxContainer" unique_id=1705953482]
+unique_name_in_owner = true
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_w71nf")
+
+[node name="MonsterButton8" type="TextureButton" parent="Down/HBoxContainer" unique_id=1335274976]
+unique_name_in_owner = true
+layout_mode = 2
+texture_normal = SubResource("AtlasTexture_np8ax")
+
+[node name="SkillTreeDialog" type="Window" parent="." unique_id=1423361099]
+oversampling_override = 1.0
+title = "技能树与军械所"
+initial_position = 2
+size = Vector2i(550, 600)
+visible = false
+transient = true
+exclusive = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="SkillTreeDialog" unique_id=38185653]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SkillTreeDialog/ScrollContainer" unique_id=1603217040]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="SkillPointsLabel" type="Label" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1605448888]
+layout_mode = 2
+text = "技能点："
+horizontal_alignment = 1
+
+[node name="EcoLabel" type="Label" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=64198523]
+layout_mode = 2
+text = "【内政经济】"
+
+[node name="BtnInitGold" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1984230523]
+layout_mode = 2
+
+[node name="BtnGoldRate" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=423399771]
+layout_mode = 2
+
+[node name="EcoLabel2" type="Label" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=573731931]
+layout_mode = 2
+text = "【技能升级】"
+
+[node name="BtnPlayerPower1" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=550299804]
+layout_mode = 2
+
+[node name="BtnPlayerPower2" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=2104521229]
+layout_mode = 2
+
+[node name="SoldierLabel" type="Label" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1807929868]
+layout_mode = 2
+text = "【兵种与强化】"
+
+[node name="BtnUnlock1" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=2135540953]
+layout_mode = 2
+
+[node name="BtnSkill1" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1304426440]
+layout_mode = 2
+
+[node name="BtnDamage1" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=340602014]
+layout_mode = 2
+
+[node name="BtnUnlock2" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1220750419]
+layout_mode = 2
+
+[node name="BtnSkill2" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1752334915]
+layout_mode = 2
+
+[node name="BtnDamage2" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=423437005]
+layout_mode = 2
+
+[node name="BtnUnlock3" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=298535616]
+layout_mode = 2
+
+[node name="BtnSkill3" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=748892632]
+layout_mode = 2
+
+[node name="BtnDamage3" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1289247289]
+layout_mode = 2
+
+[node name="BtnUnlock4" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=143018335]
+layout_mode = 2
+
+[node name="BtnSkill4" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=391356375]
+layout_mode = 2
+
+[node name="BtnDamage4" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=12876653]
+layout_mode = 2
+
+[node name="BtnUnlock5" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1010717048]
+layout_mode = 2
+
+[node name="BtnSkill5" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1406285833]
+layout_mode = 2
+
+[node name="BtnDamage5" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=565202711]
+layout_mode = 2
+
+[node name="BtnUnlock6" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=156956143]
+layout_mode = 2
+
+[node name="BtnSkill6" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=151835145]
+layout_mode = 2
+
+[node name="BtnDamage6" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=646847536]
+layout_mode = 2
+
+[node name="BtnUnlock7" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=564575481]
+layout_mode = 2
+
+[node name="BtnSkill7" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1453842540]
+layout_mode = 2
+
+[node name="BtnDamage7" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=359053308]
+layout_mode = 2
+
+[node name="BtnUnlock8" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=995473709]
+layout_mode = 2
+
+[node name="BtnSkill8" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1297169697]
+layout_mode = 2
+
+[node name="BtnDamage8" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=912295452]
+layout_mode = 2
+
+[node name="SettingsDialog" type="Window" parent="." unique_id=166879777]
+oversampling_override = 1.0
+title = "系统设置"
+initial_position = 2
+size = Vector2i(420, 260)
+visible = false
+transient = true
+exclusive = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SettingsDialog" unique_id=570293953]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="HBoxLang" type="HBoxContainer" parent="SettingsDialog/VBoxContainer" unique_id=51039771]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsDialog/VBoxContainer/HBoxLang" unique_id=728559943]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "语言选择:"
+
+[node name="LangOption" type="OptionButton" parent="SettingsDialog/VBoxContainer/HBoxLang" unique_id=1980157630]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxScale" type="HBoxContainer" parent="SettingsDialog/VBoxContainer" unique_id=1422659849]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="SettingsDialog/VBoxContainer/HBoxScale" unique_id=730766893]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "界面与分辨率:"
+
+[node name="ScaleOption" type="OptionButton" parent="SettingsDialog/VBoxContainer/HBoxScale" unique_id=948813646]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SpawnTimer" type="Timer" parent="." unique_id=64456864]
+wait_time = 5.0
+
+[connection signal="timeout" from="Up/HBoxContainer/Sprite2D/GoldTimer" to="." method="_on_gold_timer_timeout"]
