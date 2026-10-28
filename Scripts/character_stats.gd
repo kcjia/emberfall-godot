@@ -28,6 +28,10 @@ const DATA: Dictionary = {
 	"Wizard_max_health": 300,
 	"Wizard_move_speed": 120.0,
 	"Wizard_attack_cooldown": 2.0,
+	"Archer_max_health": 250,
+	"Archer_move_speed": 140.0,
+	"Archer_attack_damage": 50,
+	"Archer_attack_cooldown": 1.5,
 
 
     #小怪属性

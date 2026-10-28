@@ -28,6 +28,7 @@
 [ext_resource type="PackedScene" uid="uid://ohjwvk0tf6ot" path="res://Scene/EnemyScene/Werebear.tscn" id="19_xrxkg"]
 [ext_resource type="PackedScene" uid="uid://bg4wvt8iy3uh" path="res://Scene/EnemyScene/Werewolf.tscn" id="20_sqvbp"]
 [ext_resource type="PackedScene" uid="uid://bheh6mwao515f" path="res://Scene/EnemyScene/Flame_Golem.tscn" id="21_flame"]
+[ext_resource type="PackedScene" uid="uid://70ykw2auagyd5" path="res://Scene/PlayerScene/Archer.tscn" id="22_archer"]
 [ext_resource type="PackedScene" uid="uid://du0jgvgufdjyg" path="res://Enemy_Home.tscn" id="29_w3rk5"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3dxm6"]
@@ -1032,7 +1033,7 @@ tile_set = SubResource("TileSet_lgr22")
 script = ExtResource("4_cm0pq")
 monster_scenes = Dictionary[String, PackedScene]({
 "Armored_Axeman": ExtResource("7_4xman"),
-"Flame_Golem": ExtResource("21_flame"),
+"Archer": ExtResource("22_archer"),
 "Knight": ExtResource("7_hhcpw"),
 "Knight_Templar": ExtResource("8_mxvw5"),
 "Lancer": ExtResource("11_hri7i"),
@@ -1042,16 +1043,16 @@ monster_scenes = Dictionary[String, PackedScene]({
 })
 monster_num1 = Array[PackedScene]([ExtResource("5_lgr22"), ExtResource("6_03owx"), ExtResource("6_trn2v")])
 monster_num2 = Array[PackedScene]([ExtResource("8_wkp8b"), ExtResource("13_kjvhd"), ExtResource("19_w3rk5")])
-monster_num3 = Array[PackedScene]([ExtResource("9_5vvyt"), ExtResource("12_j4qnp"), ExtResource("17_hhcpw"), ExtResource("18_mxvw5"), ExtResource("19_xrxkg"), ExtResource("20_sqvbp")])
+monster_num3 = Array[PackedScene]([ExtResource("9_5vvyt"), ExtResource("12_j4qnp"), ExtResource("17_hhcpw"), ExtResource("18_mxvw5"), ExtResource("19_xrxkg"), ExtResource("20_sqvbp"), ExtResource("21_flame")])
 monster_num1_intervals = Array[float]([6.0, 9.0, 14.0])
 monster_num2_intervals = Array[float]([7.0, 5.0, 12.0])
-monster_num3_intervals = Array[float]([8.0, 7.0, 9.0, 5.0, 6.0, 5.0])
+monster_num3_intervals = Array[float]([8.0, 7.0, 9.0, 5.0, 6.0, 5.0, 10.0])
 monster_num3_unlock_time = 120.0
 spawn_point = NodePath("PlayerPoint")
 enemy_point = NodePath("EnemyPoint")
 player_spawn_intervals = Dictionary[String, float]({
 "Armored_Axeman": 3.0,
-"Flame_Golem": 10.0,
+"Archer": 6.0,
 "Knight": 5.0,
 "Knight_Templar": 5.5,
 "Lancer": 5.0,

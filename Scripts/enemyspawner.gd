@@ -9,7 +9,7 @@ const WARLOCK_FIRE_DAMAGE: int = 100
 	"Knight_Templar": null,
 	"Knight": null,
 	"Lancer": null,
-	"Flame_Golem": null,
+	"Archer": null,
 	"Wizard": null,
 	"Swordsman": null,
 	"Priest": null
@@ -27,13 +27,13 @@ const WARLOCK_FIRE_DAMAGE: int = 100
 @export var spawn_point: Marker2D         # 在 Inspector 中拖入固定刷怪点 Marker2D
 @export var enemy_point: Marker2D         # 在 Inspector 中拖入固定刷怪点 Marker2D
 @export_group("玩家持续生产")
-@export var player_spawn_order: Array[String] = ["Armored_Axeman", "Knight_Templar", "Knight", "Lancer", "Flame_Golem", "Wizard", "Swordsman", "Priest"]
+@export var player_spawn_order: Array[String] = ["Armored_Axeman", "Knight_Templar", "Knight", "Lancer", "Archer", "Wizard", "Swordsman", "Priest"]
 @export var player_spawn_intervals: Dictionary[String, float] = {
 	"Armored_Axeman": 3.0,
 	"Knight_Templar": 4.0,
 	"Knight": 3.5,
 	"Lancer": 5.0,
-	"Flame_Golem": 8.0,
+	"Archer": 6.0,
 	"Wizard": 6.0,
 	"Swordsman": 4.0,
 	"Priest": 6.0

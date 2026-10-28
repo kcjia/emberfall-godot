@@ -81,7 +81,7 @@ const GAME_OVER_MUSIC: AudioStream = preload("res://Sound/Game Over.ogg")
 	"Knight_Templar": 0,
 	"Knight": 20,
 	"Lancer": 20,
-	"Flame_Golem": 100,
+	"Archer": 50,
 	"Wizard": 50,
 	"Swordsman": 30,
 	"Priest": 30
@@ -121,7 +121,7 @@ func _ready() -> void:
 	monster_button2.pressed.connect(func(): _try_spawn("Knight_Templar"))
 	monster_button3.pressed.connect(func(): _try_spawn("Knight"))
 	monster_button4.pressed.connect(func(): _try_spawn("Lancer"))
-	monster_button5.pressed.connect(func(): _try_spawn("Flame_Golem"))
+	monster_button5.pressed.connect(func(): _try_spawn("Archer"))
 	monster_button6.pressed.connect(func(): _try_spawn("Wizard"))
 	monster_button7.pressed.connect(func(): _try_spawn("Swordsman"))
 	monster_button8.pressed.connect(func(): _try_spawn("Priest"))
@@ -588,7 +588,7 @@ func _refresh_button_locks() -> void:
 	_update_monster_button(monster_button2, "Knight_Templar")
 	_update_monster_button(monster_button3, "Knight")
 	_update_monster_button(monster_button4, "Lancer")
-	_update_monster_button(monster_button5, "Flame_Golem")
+	_update_monster_button(monster_button5, "Archer")
 	_update_monster_button(monster_button6, "Wizard")
 	_update_monster_button(monster_button7, "Swordsman")
 	_update_monster_button(monster_button8, "Priest")

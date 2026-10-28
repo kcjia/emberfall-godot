@@ -404,7 +404,7 @@ func _get_damage_targets() -> Array[Node2D]:
 func _get_player_damage_multiplier() -> float:
 	if is_system_spawned:
 		return 1.0
-	var idx := {"Armored_Axeman": 1, "Knight_Templar": 2, "Knight": 3, "Lancer": 4, "Flame_Golem": 5, "Wizard": 6, "Swordsman": 7, "Priest": 8}.get(character_name, 0)
+	var idx := {"Armored_Axeman": 1, "Knight_Templar": 2, "Knight": 3, "Lancer": 4, "Archer": 5, "Wizard": 6, "Swordsman": 7, "Priest": 8}.get(character_name, 0)
 	if idx == 0:
 		return 1.0
 	return 1.0 + 0.15 * float(GameManager.upgrades.get("soldier_damage%d_lvl" % idx, 0))
