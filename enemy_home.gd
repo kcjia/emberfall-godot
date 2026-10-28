@@ -28,6 +28,8 @@ var can_attack: bool = true
 var target = null
 var summon_elapsed_time: float = 0.0
 var summon_next_spawn_times: Array[float] = []
+# HUD 节点缓存：原先每帧都走一次场景树路径查找，改为首次成功后复用。
+var _hud_cache: Node = null
 
 @onready var anim_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
@@ -55,8 +57,15 @@ func _process(_delta: float) -> void:
 		_process_summon_schedule()
 
 # 查找主场景 HUD 的战斗计时，找不到时返回零并交由血量条件触发。
+# 首次成功查找到后缓存节点，避免每帧重复走场景树路径。
+func _get_hud() -> Node:
+	if is_instance_valid(_hud_cache):
+		return _hud_cache
+	_hud_cache = get_tree().current_scene.get_node_or_null("EnemySpawner/HUD")
+	return _hud_cache
+
 func _get_elapsed_battle_time() -> float:
-	var hud := get_tree().current_scene.get_node_or_null("EnemySpawner/HUD")
+	var hud := _get_hud()
 	if hud and "remaining_seconds" in hud:
 		return maxf(30.0 * 60.0 - hud.remaining_seconds, 0.0)
 	return 0.0
@@ -76,7 +85,7 @@ func take_damage(amount: float) -> void:
 # 显示玩家摧毁敌方基地后的胜利面板并销毁基地。
 func _die() -> void:
 	died.emit()
-	var hud := get_tree().current_scene.get_node_or_null("EnemySpawner/HUD")
+	var hud := _get_hud()
 	if hud and hud.has_method("show_victory"):
 		hud.show_victory()
 	queue_free()
@@ -140,7 +149,7 @@ func _damage_player_target(target_node) -> void:
 		return
 	if "is_system_spawned" in target_node and target_node.is_system_spawned:
 		return
-	target_node.take_damage(attack_damage)
+	target_node.take_damage(int(attack_damage))
 
 # 检查范围内玩家目标并启动基地攻击动画。
 func _physics_process(_delta: float) -> void:

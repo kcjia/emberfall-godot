@@ -18,13 +18,11 @@ func _update_target_detection() -> void:
 	if not _has_valid_target():
 		target = _find_nearest_enemy()
 
-# 判断敌人是否位于法师的侦测施法范围内。
+# 判断敌人是否位于法师的侦测施法范围内（复用基类同帧重叠缓存）。
 func _is_any_attack_range_reaching_target() -> bool:
 	if not is_instance_valid(target) or not is_instance_valid(detection_area):
 		return false
-	if target is Area2D:
-		return detection_area.get_overlapping_areas().has(target)
-	return detection_area.get_overlapping_bodies().has(target)
+	return _get_all_targets(detection_area).has(target)
 
 # 按攻击权重选择一种法术并开始播放对应动画。
 func _try_select_and_perform_attack() -> bool:

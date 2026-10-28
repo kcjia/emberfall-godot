@@ -11,13 +11,11 @@ func _update_target_detection() -> void:
 	if not is_instance_valid(target):
 		target = _find_lowest_health_ally()
 
-# 判断目标是否在牧师的侦测施法范围内。
+# 判断目标是否在牧师的侦测施法范围内（复用基类同帧重叠缓存）。
 func _is_any_attack_range_reaching_target() -> bool:
 	if not is_instance_valid(target) or not is_instance_valid(detection_area):
 		return false
-	if target is Area2D:
-		return detection_area.get_overlapping_areas().has(target)
-	return detection_area.get_overlapping_bodies().has(target)
+	return _get_all_targets(detection_area).has(target)
 
 # 让 DetectionArea 同时检测敌人和同阵营友军。
 func _apply_custom_layer_config(target_mask: int) -> void:

@@ -62,7 +62,9 @@ func _show_next() -> void:
 	else:
 		avatar_rect.visible = false
 
-	# 打字机效果
+	# 打字机效果：visible_ratio 从 0 渐变到 1 逐字显示。
+	# 注意：这里不能再把 visible_characters 设回 -1，否则会立刻显示全文、打字机失效；
+	# 点击快进时才用 visible_characters = -1 直接显示全句（见 _input）。
 	content_label.visible_ratio = 0.0
 	is_typing = true
 	var type_speed = 0.03 * current_text.length()
@@ -71,5 +73,3 @@ func _show_next() -> void:
 	text_tween.finished.connect(func():
 		is_typing = false
 	)
-	# 确保在打字机效果完成后显示全部文本
-	content_label.visible_characters = -1

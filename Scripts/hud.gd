@@ -187,15 +187,17 @@ func _update_gold_rate() -> void:
 	gold_timer.wait_time = max(0.2, 1.0 / (1.0 + rate_lvl * 0.2))
 
 func _try_spawn(monster_id: String) -> void:
-	# 未解锁时消耗金币解锁；已解锁时切换当前持续生产兵种。
+	# 未解锁时消耗金币解锁；已解锁时只切换持续生产兵种，不再重复扣费。
+	if GameManager.battle_unlocked_monsters.get(monster_id, false):
+		spawn_monster_requested.emit(monster_id)
+		return
 	var unlock_cost: int = int(monster_unlock_costs.get(monster_id, 0))
 	if GameManager.player_gold < unlock_cost:
 		print("金币不足，无法解锁: ", monster_id)
 		return
 	GameManager.add_gold(-unlock_cost)
-	if not GameManager.battle_unlocked_monsters.get(monster_id, false):
-		GameManager.battle_unlocked_monsters[monster_id] = true
-		_refresh_button_locks()
+	GameManager.battle_unlocked_monsters[monster_id] = true
+	_refresh_button_locks()
 	spawn_monster_requested.emit(monster_id)
 
 func _start_attack2_cooldown() -> void:

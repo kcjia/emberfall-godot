@@ -52,6 +52,11 @@ var is_invincible: bool = false
 ## 【核心改进】：记录本次挥砍中已经受到过伤害的敌人列表，支持 AoE 群伤且防止单次挥砍重复扣血
 var hit_enemies_in_current_swing: Array[Node2D] = []
 
+## 同一物理帧内复用重叠查询结果：每帧多次调用 get_overlapping_* 会重复分配数组，
+## 单位多时开销明显；缓存以物理帧号为键，帧切换时自动失效。
+var _overlap_frame: int = -1
+var _overlap_cache: Dictionary = {}
+
 # --- 3. 节点引用 ---
 @onready var anim_player: AnimationPlayer = get_node_or_null("AnimationPlayer")
 @onready var sprite: AnimatedSprite2D = get_node_or_null("AnimatedSprite2D")
@@ -227,13 +232,11 @@ func _is_any_attack_range_reaching_target() -> bool:
 	# 	return true
 	return false
 
-# 按目标类型检查指定攻击区域是否包含当前目标。
+# 按目标类型检查指定攻击区域是否包含当前目标（复用同帧重叠缓存）。
 func _attack_area_contains_target(area: Area2D) -> bool:
 	if not is_instance_valid(area) or not is_instance_valid(target):
 		return false
-	if target is Area2D:
-		return area.get_overlapping_areas().has(target)
-	return area.get_overlapping_bodies().has(target)
+	return _get_all_targets(area).has(target)
 
 # --- 1. 目标检测与刷新 ---
 # 仅在当前目标死亡或失效时，锁定侦测范围内最近的敌方目标。
@@ -506,12 +509,6 @@ func _on_animation_finished(anim_name: StringName) -> void:
 		return
 
 	match anim_name:
-		"Hurt":
-			if current_state == State.HURT:
-				if is_instance_valid(target) and _is_any_attack_range_reaching_target():
-					change_state(State.IDLE)
-				else:
-					change_state(State.WALK)
 		"Attack1", "Attack2", "Attack3", "Attack":
 			is_attacking = false
 			start_attack_cooldown()
@@ -546,15 +543,22 @@ func _on_detection_area_body_entered(body: Node2D) -> void:
 func _on_detection_area_body_exited(_body: Node2D) -> void:
 	pass
 		
-# 收集指定区域内重叠的物理体和区域目标。
+# 收集指定区域内重叠的物理体和区域目标；同一物理帧内复用缓存结果。
 func _get_all_targets(area: Area2D) -> Array[Node2D]:
-	var results: Array[Node2D] = []
 	if not is_instance_valid(area):
-		return results
+		return []
+	var frame := Engine.get_physics_frames()
+	if frame != _overlap_frame:
+		_overlap_frame = frame
+		_overlap_cache.clear()
+	if _overlap_cache.has(area):
+		return _overlap_cache[area]
+	var results: Array[Node2D] = []
 	for b in area.get_overlapping_bodies():
 		results.append(b)
 	for a in area.get_overlapping_areas():
 		results.append(a)
+	_overlap_cache[area] = results
 	return results
 
 # 弹出气泡文本

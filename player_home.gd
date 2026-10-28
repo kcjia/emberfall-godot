@@ -68,10 +68,12 @@ func _on_start_finished(_anim_name: StringName) -> void:
 		_play_animation("Idle")
 
 # 按 Attack1 近距离优先、Attack2 中距离次之的规则自动攻击。
+# 锁定目标不在 Attack1 范围时，也在 Attack2 范围内找最近敌人补位，
+# 避免基地因锁定目标在远处而对已进入中距离的敌人无动于衷。
 func _physics_process(_delta: float) -> void:
 	if not can_attack:
 		return
-	
+
 	# 目标存活时持续锁定，仅在失效后按距离选择最近敌人。
 	if not _is_valid_locked_enemy(target):
 		target = _find_valid_enemy()
@@ -79,9 +81,7 @@ func _physics_process(_delta: float) -> void:
 		perform_attack("Attack1")
 		return
 
-	if not is_instance_valid(target):
-		target = _find_valid_enemy_in_area("Attack2")
-	if is_instance_valid(target) and _area_contains_target("Attack2", target):
+	if is_instance_valid(_find_valid_enemy_in_area("Attack2")):
 		perform_attack("Attack2")
 
 # 查找 Attack1 范围内最近的有效敌人。
@@ -254,7 +254,7 @@ func _damage_enemy(target_node) -> void:
 		return
 	if "is_system_spawned" in target_node and target_node.is_system_spawned == is_system_spawned:
 		return
-	target_node.take_damage(attack_damage)
+	target_node.take_damage(int(attack_damage))
 
 # 配置并启动 Attack3 的持续激光技能。
 func fire_laser() -> void:
