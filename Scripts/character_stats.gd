@@ -2,6 +2,7 @@ class_name CharacterStats
 extends RefCounted
 
 # 集中管理所有角色的基础属性，键名格式为“角色名_属性名”。
+# 唯一生效处：单位出生时按角色名查表覆盖，场景根节点里的同名属性会被覆盖、改了也没用，改数值只改这里。
 const DATA: Dictionary = {
     #玩家兵种属性
 	"Armored_Axeman_max_health": 200,

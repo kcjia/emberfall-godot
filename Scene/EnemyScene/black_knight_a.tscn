@@ -775,8 +775,6 @@ scale = Vector2(2, 2)
 script = ExtResource("2_8b0fk")
 attack2_dash_duration = 0.5
 attack2_dash_speed = 240.0
-max_health = 200
-attack_damage = 40
 attack1_weight = 60.0
 attack3_weight = 10.0
 

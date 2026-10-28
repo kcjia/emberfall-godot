@@ -673,10 +673,6 @@ size = Vector2(233, 50)
 
 [node name="CharacterBody2D" unique_id=1983484150 instance=ExtResource("1_sb1m4")]
 scale = Vector2(1.5, 1.5)
-max_health = 2000
-move_speed = 25.0
-attack_damage = 100
-attack_cooldown = 4.0
 
 [node name="CurrentHealth" parent="." index="0" unique_id=804942151]
 offset_left = -34.0
