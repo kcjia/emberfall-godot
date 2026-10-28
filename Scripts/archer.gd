@@ -1,16 +1,22 @@
 extends "res://Scripts/enemy_base.gd"
 
-const ARCHER_HARM_SCENE: PackedScene = preload("res://Scene/SkillScene/Wizard_Harm.tscn")
-# 箭矢暂复用法师火球场景（暂无独立箭矢美术，命中与飞行逻辑与火球一致）。
-const ARCHER_ARROW_SCENE: PackedScene = preload("res://Scene/SkillScene/Wizard_FireBall.tscn")
+const ARCHER_ARROW_SCENE: PackedScene = preload("res://Scene/SkillScene/Archer_Arrow.tscn")
+const ARROW_TEXTURE_01: Texture2D = preload("res://Image/Arrow01.png")
+const ARROW_TEXTURE_02: Texture2D = preload("res://Image/Arrow02.png")
+const ARROW_TEXTURE_03: Texture2D = preload("res://Image/Arrow03.png")
 
 @export_group("弓兵技能伤害")
 @export var attack1_damage: int = 120
 @export var attack2_damage: int = 80
+@export var attack3_damage: int = 180
 
-@export_group("弓兵技能节点")
-@export var fireball_speed: float = 300.0
-@export var fireball_max_distance: float = 600.0
+@export_group("弓兵箭矢飞行")
+@export var arrow1_speed: float = 400.0
+@export var arrow1_arc: float = 60.0
+@export var arrow2_speed: float = 500.0
+@export var arrow2_arc: float = 40.0
+@export var arrow3_speed: float = 300.0
+@export var arrow3_arc: float = 100.0
 
 @onready var spell_marker: Marker2D = get_node_or_null("Marker2D")
 
@@ -37,6 +43,9 @@ func _try_select_and_perform_attack() -> bool:
 	if attack2_weight > 0.0:
 		available_states.append(State.ATTACK2)
 		available_weights.append(attack2_weight)
+	if attack3_weight > 0.0:
+		available_states.append(State.ATTACK3)
+		available_weights.append(attack3_weight)
 	if available_states.is_empty():
 		return false
 
@@ -71,31 +80,22 @@ func _find_nearest_enemy() -> Node2D:
 			nearest_enemy = candidate
 	return nearest_enemy
 
-# 在动画结束时释放对应射击并结算伤害。
+# 在动画结束时发射对应箭矢。
 func _on_custom_animation_finished(anim_name: StringName) -> void:
 	if anim_name == &"Attack1":
-		_cast_attack1_harm()
+		_cast_arrow(ARROW_TEXTURE_01, attack1_damage, arrow1_speed, arrow1_arc)
 	elif anim_name == &"Attack2":
-		_cast_attack2_arrow()
+		_cast_arrow(ARROW_TEXTURE_02, attack2_damage, arrow2_speed, arrow2_arc)
+	elif anim_name == &"Attack3":
+		_cast_arrow(ARROW_TEXTURE_03, attack3_damage, arrow3_speed, arrow3_arc)
 
-# 在锁定目标的位置生成弓兵的 Attack1 伤害特效。
-func _cast_attack1_harm() -> void:
-	if not _has_valid_target():
-		return
-	var effect = ARCHER_HARM_SCENE.instantiate()
-	get_parent().add_child(effect)
-	effect.global_position = target.global_position
-	target.take_damage(int(attack1_damage * _get_player_damage_multiplier()))
-	get_tree().create_timer(0.7).timeout.connect(effect.queue_free)
-
-# 从 Marker2D 位置生成箭矢，并沿弓兵朝向飞行。
-func _cast_attack2_arrow() -> void:
-	if not is_instance_valid(spell_marker):
+# 从 Marker2D 位置发射一支抛物线箭矢，飞向当前锁定目标。
+func _cast_arrow(arrow_texture: Texture2D, base_damage: int, speed: float, arc_height: float) -> void:
+	if not _has_valid_target() or not is_instance_valid(spell_marker):
 		return
 	var arrow = ARCHER_ARROW_SCENE.instantiate()
-	get_parent().add_child(fireball)
-	var direction := Vector2(-1.0 if is_system_spawned else 1.0, 0.0)
-	if fireball.has_method("setup"):
-		arrow.setup(spell_marker.global_position, direction, is_system_spawned, int(attack2_damage * _get_player_damage_multiplier()), fireball_speed, fireball_max_distance)
+	get_parent().add_child(arrow)
+	if arrow.has_method("setup"):
+		arrow.setup(spell_marker.global_position, target, is_system_spawned, int(base_damage * _get_player_damage_multiplier()), speed, arc_height, arrow_texture)
 	else:
 		arrow.global_position = spell_marker.global_position

@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Scripts/archer_arrow.gd" id="1_arrow"]
+[ext_resource type="Texture2D" path="res://Image/Arrow01.png" id="2_arrow"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_arrow"]
+radius = 8.0
+
+[node name="Area2D" type="Area2D" unique_id=1938475621]
+script = ExtResource("1_arrow")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1482957304]
+texture = ExtResource("2_arrow")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=872451906]
+shape = SubResource("CircleShape2D_arrow")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=1294857032]
+rect = Rect2(-16, -16, 32, 32)
