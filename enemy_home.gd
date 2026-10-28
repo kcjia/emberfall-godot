@@ -117,9 +117,13 @@ func _setup_base_bar_juice() -> void:
 	else:
 		_base_fill_stylebox = StyleBoxFlat.new()
 	progress_bar.add_theme_stylebox_override("fill", _base_fill_stylebox)
-	_base_ghost_bar = ProgressBar.new()
-	_base_ghost_bar.position = progress_bar.position
-	_base_ghost_bar.size = progress_bar.size
+	# 残影条：直接复制主条节点（布局与主条完全一致，避免新建节点尺寸走样），
+	# 改名防重名、自带染色清零、强制垫底。
+	_base_ghost_bar = progress_bar.duplicate() as ProgressBar
+	_base_ghost_bar.name = "GhostHealthBar"
+	_base_ghost_bar.self_modulate = Color(1.0, 1.0, 1.0, 1.0)
+	_base_ghost_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_base_ghost_bar.z_index = -1
 	_base_ghost_bar.min_value = 0.0
 	_base_ghost_bar.max_value = max_health
 	_base_ghost_bar.value = current_health
