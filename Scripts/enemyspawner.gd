@@ -75,6 +75,8 @@ func _ready() -> void:
 	_initialize_player_schedule()
 	_build_system_roster()
 	_initialize_system_active()
+	# 调试打印：确认生成器就绪时的队列状态，定位不出兵后删除。
+	print("[生成器] 就绪：玩家队列=", active_player_spawn_types, " 系统队列=", system_active_keys, " 解锁=", GameManager.battle_unlocked_monsters)
 
 # 检查 Inspector 中拖入的玩家单位场景是否完整且类型正确。
 func _validate_monster_scenes() -> void:
@@ -92,6 +94,8 @@ func _validate_monster_scenes() -> void:
 func _process(delta: float) -> void:
 	if not spawning_enabled:
 		return
+	if game_time < 0.1:
+		print("[生成器] _process 运行中，game_time=", game_time)
 	game_time += delta
 	_process_player_schedule()
 	_process_system_schedule()
@@ -101,6 +105,7 @@ func start_spawning() -> void:
 	if spawning_enabled:
 		return
 	spawning_enabled = true
+	print("[生成器] 开始生成，spawning_enabled=true")
 	_initialize_player_schedule()
 
 # 接收 HUD 的兵种按钮事件：按钮只作生产切换，不直接出兵。
@@ -150,6 +155,7 @@ func _spawn_player_monster(monster_id: String) -> void:
 	get_parent().add_child(enemy)
 	enemy.global_position = spawn_point.global_position
 	enemy.setup_as_player_enemy()
+	print("[生成器] 生成玩家兵：", monster_id, " 位置=", enemy.global_position)
 
 # 按按钮顺序持续生产生产队列中的已解锁兵种（同时最多 3 种）。
 func _process_player_schedule() -> void:
@@ -273,3 +279,4 @@ func _spawn_system_monster(scene: PackedScene) -> void:
 	get_parent().add_child(enemy)
 	enemy.global_position = enemy_point.global_position
 	enemy.setup_as_system_enemy()
+	print("[生成器] 生成系统兵，位置=", enemy.global_position)
