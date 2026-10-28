@@ -38,9 +38,9 @@ var current_state: State = State.IDLE
 @export var attack3_weight: float = 20.0
 
 # --- 阵营与战斗控制变量 ---
-var max_health: int = 100
-var move_speed: float = 80.0
-var attack_damage: int = 10
+var max_health: int = 500
+var move_speed: float = 120.0
+var attack_damage: int = 50
 var is_system_spawned: bool = false
 var is_attacking: bool = false
 var current_health: int

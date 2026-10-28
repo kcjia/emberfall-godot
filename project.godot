@@ -25,11 +25,9 @@ GameManager="*uid://dwxwgmi1cjhxc"
 window/size/viewport_width=1280
 window/size/viewport_height=768
 window/size/resizable=false
-window/size/always_on_top=false
 window/size/maximize_disabled=true
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
-window/vsync/vsync_mode=1
 
 [internationalization]
 

@@ -24,7 +24,7 @@ const DATA: Dictionary = {
 	"Priest_attack_cooldown": 0.5,
 	"Swordsman_max_health": 500,
 	"Swordsman_move_speed": 120.0,
-	"Swordsman_attack_damage": 100,
+	"Swordsman_attack_damage": 60,
 	"Wizard_max_health": 300,
 	"Wizard_move_speed": 120.0,
 	"Wizard_attack_cooldown": 2.0,
