@@ -7,12 +7,12 @@
 [ext_resource type="Texture2D" uid="uid://diwh7r8bfwp27" path="res://Image/PlayerImage/Knight.png" id="5_4u2vk"]
 [ext_resource type="Script" uid="uid://dbixv56jdxyex" path="res://Scripts/skill_cooldown_overlay.gd" id="5_cooldown"]
 [ext_resource type="Texture2D" uid="uid://c13lqyxuxeqkg" path="res://Image/PlayerImage/Lancer.png" id="6_4q17s"]
-[ext_resource type="Texture2D" uid="uid://oafeksy84i82" path="res://Image/PlayerImage/Archer.png" id="7_2d608"]
 [ext_resource type="Texture2D" uid="uid://dhufphlaeef8i" path="res://Image/PlayerImage/Wizard.png" id="8_w71nf"]
 [ext_resource type="Texture2D" uid="uid://ce8clo8htd4ly" path="res://Image/Enemy/Warlock.png" id="9_615i1"]
 [ext_resource type="Texture2D" uid="uid://1kqjtkyh0tkq" path="res://Image/Laser_sheet.png" id="11_pw7dr"]
 [ext_resource type="Texture2D" uid="uid://7gtt2xcg63qf" path="res://Image/PlayerImage/Swordsman.png" id="12_4u2vk"]
 [ext_resource type="Texture2D" uid="uid://cr1avfue3bh32" path="res://Image/PlayerImage/Priest.png" id="13_4q17s"]
+[ext_resource type="Texture2D" uid="uid://c1c0576u40cvq" path="res://Image/Enemy/Flame Golem.png" id="14_golem"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8w6vd"]
 atlas = ExtResource("9_615i1")
@@ -38,10 +38,6 @@ region = Rect2(32, 24, 40, 48)
 atlas = ExtResource("6_4q17s")
 region = Rect2(32, 16, 40, 48)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_rgb5v"]
-atlas = ExtResource("7_2d608")
-region = Rect2(32, 24, 40, 48)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_2d608"]
 atlas = ExtResource("8_w71nf")
 region = Rect2(29, 23, 41, 46)
@@ -53,6 +49,10 @@ region = Rect2(32, 23, 42, 45)
 [sub_resource type="AtlasTexture" id="AtlasTexture_np8ax"]
 atlas = ExtResource("13_4q17s")
 region = Rect2(32, 24, 40, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_golem"]
+atlas = ExtResource("14_golem")
+region = Rect2(0, 200, 100, 100)
 
 [node name="HUD" type="CanvasLayer" unique_id=2098210901]
 process_mode = 3
@@ -263,7 +263,10 @@ texture_normal = SubResource("AtlasTexture_5iihh")
 [node name="MonsterButton5" type="TextureButton" parent="Down/HBoxContainer" unique_id=270199292]
 unique_name_in_owner = true
 layout_mode = 2
-texture_normal = SubResource("AtlasTexture_rgb5v")
+texture_normal = SubResource("AtlasTexture_golem")
+ignore_texture_size = true
+stretch_mode = 5
+custom_minimum_size = Vector2(40, 48)
 
 [node name="MonsterButton6" type="TextureButton" parent="Down/HBoxContainer" unique_id=1795856604]
 unique_name_in_owner = true
@@ -310,9 +313,6 @@ horizontal_alignment = 1
 layout_mode = 2
 text = "【内政经济】"
 
-[node name="BtnInitGold" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1984230523]
-layout_mode = 2
-
 [node name="BtnGoldRate" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=423399771]
 layout_mode = 2
 
@@ -333,16 +333,10 @@ text = "【兵种与强化】"
 [node name="BtnUnlock1" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=2135540953]
 layout_mode = 2
 
-[node name="BtnSkill1" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1304426440]
-layout_mode = 2
-
 [node name="BtnDamage1" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=340602014]
 layout_mode = 2
 
 [node name="BtnUnlock2" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1220750419]
-layout_mode = 2
-
-[node name="BtnSkill2" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1752334915]
 layout_mode = 2
 
 [node name="BtnDamage2" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=423437005]
@@ -351,16 +345,10 @@ layout_mode = 2
 [node name="BtnUnlock3" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=298535616]
 layout_mode = 2
 
-[node name="BtnSkill3" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=748892632]
-layout_mode = 2
-
 [node name="BtnDamage3" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1289247289]
 layout_mode = 2
 
 [node name="BtnUnlock4" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=143018335]
-layout_mode = 2
-
-[node name="BtnSkill4" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=391356375]
 layout_mode = 2
 
 [node name="BtnDamage4" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=12876653]
@@ -369,16 +357,10 @@ layout_mode = 2
 [node name="BtnUnlock5" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1010717048]
 layout_mode = 2
 
-[node name="BtnSkill5" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1406285833]
-layout_mode = 2
-
 [node name="BtnDamage5" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=565202711]
 layout_mode = 2
 
 [node name="BtnUnlock6" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=156956143]
-layout_mode = 2
-
-[node name="BtnSkill6" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=151835145]
 layout_mode = 2
 
 [node name="BtnDamage6" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=646847536]
@@ -387,16 +369,10 @@ layout_mode = 2
 [node name="BtnUnlock7" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=564575481]
 layout_mode = 2
 
-[node name="BtnSkill7" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1453842540]
-layout_mode = 2
-
 [node name="BtnDamage7" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=359053308]
 layout_mode = 2
 
 [node name="BtnUnlock8" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=995473709]
-layout_mode = 2
-
-[node name="BtnSkill8" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=1297169697]
 layout_mode = 2
 
 [node name="BtnDamage8" type="Button" parent="SkillTreeDialog/ScrollContainer/VBoxContainer" unique_id=912295452]

@@ -5,9 +5,9 @@ extends RefCounted
 # 唯一生效处：单位出生时按角色名查表覆盖，场景根节点里的同名属性会被覆盖、改了也没用，改数值只改这里。
 const DATA: Dictionary = {
     #玩家兵种属性
-	"Armored_Axeman_max_health": 200,
+	"Armored_Axeman_max_health": 280,
 	"Armored_Axeman_move_speed": 120.0,
-	"Armored_Axeman_attack_damage": 30,
+	"Armored_Axeman_attack_damage": 40,
 	"Knight_max_health": 300,
 	"Knight_move_speed": 100.0,
 	"Knight_attack_damage": 50,
@@ -17,7 +17,7 @@ const DATA: Dictionary = {
 	"Knight_Templar_attack_cooldown": 1.0,
 	"Lancer_max_health": 500,
 	"Lancer_move_speed": 200.0,
-	"Lancer_attack_damage": 100,
+	"Lancer_attack_damage": 80,
 	"Priest_max_health": 250,
 	"Priest_move_speed": 150.0,
 	"Priest_attack_damage": 50,

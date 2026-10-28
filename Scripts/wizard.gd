@@ -84,7 +84,7 @@ func _cast_attack1_harm() -> void:
 	var effect = WIZARD_HARM_SCENE.instantiate()
 	get_parent().add_child(effect)
 	effect.global_position = target.global_position
-	target.take_damage(attack1_damage)
+	target.take_damage(int(attack1_damage * _get_player_damage_multiplier()))
 	get_tree().create_timer(0.7).timeout.connect(effect.queue_free)
 
 # 从 Marker2D 位置生成火球，并沿法师朝向飞行。
@@ -95,6 +95,6 @@ func _cast_attack2_fireball() -> void:
 	get_parent().add_child(fireball)
 	var direction := Vector2(-1.0 if is_system_spawned else 1.0, 0.0)
 	if fireball.has_method("setup"):
-		fireball.setup(spell_marker.global_position, direction, is_system_spawned, attack2_damage, fireball_speed, fireball_max_distance)
+		fireball.setup(spell_marker.global_position, direction, is_system_spawned, int(attack2_damage * _get_player_damage_multiplier()), fireball_speed, fireball_max_distance)
 	else:
 		fireball.global_position = spell_marker.global_position

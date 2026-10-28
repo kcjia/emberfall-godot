@@ -38,33 +38,24 @@ const GAME_OVER_MUSIC: AudioStream = preload("res://Sound/Game Over.ogg")
 # 技能树弹窗控件
 @onready var skill_tree_dialog: Window = $SkillTreeDialog
 @onready var skill_points_label: Label = $SkillTreeDialog/ScrollContainer/VBoxContainer/SkillPointsLabel
-@onready var btn_init_gold: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnInitGold
 @onready var btn_gold_rate: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnGoldRate
 @onready var player_skill1_power: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnPlayerPower1
 @onready var player_skill2_power: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnPlayerPower2
 @onready var btn_unlock_1: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnUnlock1
-@onready var btn_skill_1: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnSkill1
 @onready var btn_damage_1: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnDamage1
 @onready var btn_unlock_2: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnUnlock2
-@onready var btn_skill_2: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnSkill2
 @onready var btn_damage_2: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnDamage2
 @onready var btn_unlock_3: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnUnlock3
-@onready var btn_skill_3: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnSkill3
 @onready var btn_damage_3: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnDamage3
 @onready var btn_unlock_4: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnUnlock4
-@onready var btn_skill_4: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnSkill4
 @onready var btn_damage_4: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnDamage4
 @onready var btn_unlock_5: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnUnlock5
-@onready var btn_skill_5: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnSkill5
 @onready var btn_damage_5: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnDamage5
 @onready var btn_unlock_6: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnUnlock6
-@onready var btn_skill_6: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnSkill6
 @onready var btn_damage_6: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnDamage6
 @onready var btn_unlock_7: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnUnlock7
-@onready var btn_skill_7: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnSkill7
 @onready var btn_damage_7: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnDamage7
 @onready var btn_unlock_8: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnUnlock8
-@onready var btn_skill_8: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnSkill8
 @onready var btn_damage_8: Button = $SkillTreeDialog/ScrollContainer/VBoxContainer/BtnDamage8
 
 # 设置弹窗控件
@@ -293,14 +284,6 @@ func _open_skill_tree() -> void:
 const MAX_UPGRADE_LEVEL: int = 10
 func _init_skill_tree_signals() -> void:
 	# 连接技能树各升级按钮的购买逻辑。
-	# 击杀金币提升 (上限 10 级)
-	btn_init_gold.pressed.connect(func():
-		if _buy_upgrade(1):
-			if GameManager.upgrades["kill_gold_lvl"] >= MAX_UPGRADE_LEVEL:
-				return
-			GameManager.upgrades["kill_gold_lvl"] += 1
-			_after_upgrade()
-	)
 	# 金币增速提升 (上限 10 级)
 	btn_gold_rate.pressed.connect(func():
 		if _buy_upgrade(1):
@@ -331,14 +314,6 @@ func _init_skill_tree_signals() -> void:
 			GameManager.upgrades["soldier_Btn1_unlocked"] = true
 			_after_upgrade()
 	)
-	# 兵种技能解锁 (单次解锁)
-	btn_skill_1.pressed.connect(func():
-		if _buy_upgrade(1):
-			if GameManager.upgrades["soldier_skill1_unlocked"]:
-				return
-			GameManager.upgrades["soldier_skill1_unlocked"] = true
-			_after_upgrade()
-	)
 	# 兵种伤害强化 (上限 10 级)
 	btn_damage_1.pressed.connect(func():
 		if _buy_upgrade(1):
@@ -352,14 +327,6 @@ func _init_skill_tree_signals() -> void:
 	btn_unlock_2.pressed.connect(func():
 		if _buy_upgrade(1):
 			GameManager.upgrades["soldier_Btn2_unlocked"] = true
-			_after_upgrade()
-	)
-	# 兵种技能解锁 (单次解锁)
-	btn_skill_2.pressed.connect(func():
-		if _buy_upgrade(1):
-			if GameManager.upgrades["soldier_skill2_unlocked"]:
-				return
-			GameManager.upgrades["soldier_skill2_unlocked"] = true
 			_after_upgrade()
 	)
 	# 兵种伤害强化 (上限 10 级)
@@ -377,14 +344,6 @@ func _init_skill_tree_signals() -> void:
 			GameManager.upgrades["soldier_Btn3_unlocked"] = true
 			_after_upgrade()
 	)
-	# 兵种技能解锁 (单次解锁)
-	btn_skill_3.pressed.connect(func():
-		if _buy_upgrade(1):
-			if GameManager.upgrades["soldier_skill3_unlocked"]:
-				return
-			GameManager.upgrades["soldier_skill3_unlocked"] = true
-			_after_upgrade()
-	)
 	# 兵种伤害强化 (上限 10 级)
 	btn_damage_3.pressed.connect(func():
 		if _buy_upgrade(1):
@@ -398,14 +357,6 @@ func _init_skill_tree_signals() -> void:
 	btn_unlock_4.pressed.connect(func():
 		if _buy_upgrade(1):
 			GameManager.upgrades["soldier_Btn4_unlocked"] = true
-			_after_upgrade()
-	)
-	# 兵种技能解锁 (单次解锁)
-	btn_skill_4.pressed.connect(func():
-		if _buy_upgrade(1):
-			if GameManager.upgrades["soldier_skill4_unlocked"]:
-				return
-			GameManager.upgrades["soldier_skill4_unlocked"] = true
 			_after_upgrade()
 	)
 	# 兵种伤害强化 (上限 10 级)
@@ -423,14 +374,6 @@ func _init_skill_tree_signals() -> void:
 			GameManager.upgrades["soldier_Btn5_unlocked"] = true
 			_after_upgrade()
 	)
-	# 兵种技能解锁 (单次解锁)
-	btn_skill_5.pressed.connect(func():
-		if _buy_upgrade(1):
-			if GameManager.upgrades["soldier_skill5_unlocked"]:
-				return
-			GameManager.upgrades["soldier_skill5_unlocked"] = true
-			_after_upgrade()
-	)
 	# 兵种伤害强化 (上限 10 级)
 	btn_damage_5.pressed.connect(func():
 		if _buy_upgrade(1):
@@ -444,14 +387,6 @@ func _init_skill_tree_signals() -> void:
 	btn_unlock_6.pressed.connect(func():
 		if _buy_upgrade(1):
 			GameManager.upgrades["soldier_Btn6_unlocked"] = true
-			_after_upgrade()
-	)
-	# 兵种技能解锁 (单次解锁)
-	btn_skill_6.pressed.connect(func():
-		if _buy_upgrade(1):
-			if GameManager.upgrades["soldier_skill6_unlocked"]:
-				return
-			GameManager.upgrades["soldier_skill6_unlocked"] = true
 			_after_upgrade()
 	)
 	# 兵种伤害强化 (上限 10 级)
@@ -469,14 +404,6 @@ func _init_skill_tree_signals() -> void:
 			GameManager.upgrades["soldier_Btn7_unlocked"] = true
 			_after_upgrade()
 	)
-	# 兵种技能解锁 (单次解锁)
-	btn_skill_7.pressed.connect(func():
-		if _buy_upgrade(1):
-			if GameManager.upgrades["soldier_skill7_unlocked"]:
-				return
-			GameManager.upgrades["soldier_skill7_unlocked"] = true
-			_after_upgrade()
-	)
 	# 兵种伤害强化 (上限 10 级)
 	btn_damage_7.pressed.connect(func():
 		if _buy_upgrade(1):
@@ -490,14 +417,6 @@ func _init_skill_tree_signals() -> void:
 	btn_unlock_8.pressed.connect(func():
 		if _buy_upgrade(1):
 			GameManager.upgrades["soldier_Btn8_unlocked"] = true
-			_after_upgrade()
-	)
-	# 兵种技能解锁 (单次解锁)
-	btn_skill_8.pressed.connect(func():
-		if _buy_upgrade(1):
-			if GameManager.upgrades["soldier_skill8_unlocked"]:
-				return
-			GameManager.upgrades["soldier_skill8_unlocked"] = true
 			_after_upgrade()
 	)
 	# 兵种伤害强化 (上限 10 级)
@@ -525,15 +444,8 @@ func _after_upgrade() -> void:
 func _update_skill_tree_ui() -> void:
 	var up = GameManager.upgrades
 	skill_points_label.text = tr("UI_SKILL_POINTS") % GameManager.skill_points
-	# 1. 击杀金币等级
-	var kill_gold_lvl: int = up["kill_gold_lvl"]
-	btn_init_gold.disabled = (kill_gold_lvl >= MAX_UPGRADE_LEVEL)
-	if kill_gold_lvl >= MAX_UPGRADE_LEVEL:
-		btn_init_gold.text = tr("SKILL_KILL_GOLD_MAX")
-	else:
-		btn_init_gold.text = tr("SKILL_KILL_GOLD") % [kill_gold_lvl, 1 + kill_gold_lvl]
 	
-	# 2. 金币增速等级
+	# 1. 金币增速等级
 	var rate_lvl: int = up["gold_rate_lvl"]
 	btn_gold_rate.disabled = (rate_lvl >= MAX_UPGRADE_LEVEL)
 	if rate_lvl >= MAX_UPGRADE_LEVEL:
@@ -541,7 +453,7 @@ func _update_skill_tree_ui() -> void:
 	else:
 		btn_gold_rate.text = tr("SKILL_GOLD_RATE") % rate_lvl
 
-	# 4. 玩家技能1威力等级
+	# 2. 玩家技能1威力等级
 	var player_skill1_power_lvl: int = up["player_skill_1_power_lvl"]
 	player_skill1_power.disabled = (player_skill1_power_lvl >= MAX_UPGRADE_LEVEL)
 	if player_skill1_power_lvl >= MAX_UPGRADE_LEVEL:
@@ -549,7 +461,7 @@ func _update_skill_tree_ui() -> void:
 	else:
 		player_skill1_power.text = tr("SKILL_PLAYER_POWER1") % player_skill1_power_lvl
 
-	# 5. 玩家技能2威力等级
+	# 3. 玩家技能2威力等级
 	var player_skill2_power_lvl: int = up["player_skill_2_power_lvl"]
 	player_skill2_power.disabled = (player_skill2_power_lvl >= MAX_UPGRADE_LEVEL)
 	if player_skill2_power_lvl >= MAX_UPGRADE_LEVEL:
@@ -557,71 +469,47 @@ func _update_skill_tree_ui() -> void:
 	else:
 		player_skill2_power.text = tr("SKILL_PLAYER_POWER2") % player_skill2_power_lvl
 	
-	# 3. 兵种与兵种技能
+	# 4. 兵种与兵种技能
 	btn_unlock_1.disabled = up["soldier_Btn1_unlocked"]
 	btn_unlock_1.text = tr("SKILL_UNLOCKED") if up["soldier_Btn1_unlocked"] else tr("SKILL_UNLOCK_SOLDIER")
 	
-	btn_skill_1.visible = up["soldier_Btn1_unlocked"]
-	btn_skill_1.disabled = up["soldier_skill1_unlocked"]
-	btn_skill_1.text = tr("SKILL_LEARNED") if up["soldier_skill1_unlocked"] else tr("SKILL_UNLOCK_SKILL")
 	
 	btn_unlock_2.visible = up["soldier_Btn1_unlocked"]
 	btn_unlock_2.disabled = up["soldier_Btn2_unlocked"]
 	btn_unlock_2.text = tr("SKILL_UNLOCKED") if up["soldier_Btn2_unlocked"] else tr("SKILL_UNLOCK_SOLDIER")
 	
-	btn_skill_2.visible = up["soldier_Btn2_unlocked"]
-	btn_skill_2.disabled = up["soldier_skill2_unlocked"]
-	btn_skill_2.text = tr("SKILL_LEARNED") if up["soldier_skill2_unlocked"] else tr("SKILL_UNLOCK_SKILL")
 	
 	btn_unlock_3.visible = up["soldier_Btn2_unlocked"]
 	btn_unlock_3.disabled = up["soldier_Btn3_unlocked"]
 	btn_unlock_3.text = tr("SKILL_UNLOCKED") if up["soldier_Btn3_unlocked"] else tr("SKILL_UNLOCK_SOLDIER")
 	
-	btn_skill_3.visible = up["soldier_Btn3_unlocked"]
-	btn_skill_3.disabled = up["soldier_skill3_unlocked"]
-	btn_skill_3.text = tr("SKILL_LEARNED") if up["soldier_skill3_unlocked"] else tr("SKILL_UNLOCK_SKILL")
 	
 	btn_unlock_4.visible = up["soldier_Btn3_unlocked"]
 	btn_unlock_4.disabled = up["soldier_Btn4_unlocked"]
 	btn_unlock_4.text = tr("SKILL_UNLOCKED") if up["soldier_Btn4_unlocked"] else tr("SKILL_UNLOCK_SOLDIER")
 	
-	btn_skill_4.visible = up["soldier_Btn4_unlocked"]
-	btn_skill_4.disabled = up["soldier_skill4_unlocked"]
-	btn_skill_4.text = tr("SKILL_LEARNED") if up["soldier_skill4_unlocked"] else tr("SKILL_UNLOCK_SKILL")
 	
 	btn_unlock_5.visible = up["soldier_Btn4_unlocked"]
 	btn_unlock_5.disabled = up["soldier_Btn5_unlocked"]
 	btn_unlock_5.text = tr("SKILL_UNLOCKED") if up["soldier_Btn5_unlocked"] else tr("SKILL_UNLOCK_SOLDIER")
 	
-	btn_skill_5.visible = up["soldier_Btn5_unlocked"]
-	btn_skill_5.disabled = up["soldier_skill5_unlocked"]
-	btn_skill_5.text = tr("SKILL_LEARNED") if up["soldier_skill5_unlocked"] else tr("SKILL_UNLOCK_SKILL")
 	
 	btn_unlock_6.visible = up["soldier_Btn5_unlocked"]
 	btn_unlock_6.disabled = up["soldier_Btn6_unlocked"]
 	btn_unlock_6.text = tr("SKILL_UNLOCKED") if up["soldier_Btn6_unlocked"] else tr("SKILL_UNLOCK_SOLDIER")
 	
-	btn_skill_6.visible = up["soldier_Btn6_unlocked"]
-	btn_skill_6.disabled = up["soldier_skill6_unlocked"]
-	btn_skill_6.text = tr("SKILL_LEARNED") if up["soldier_skill6_unlocked"] else tr("SKILL_UNLOCK_SKILL")
 	
 	btn_unlock_7.visible = up["soldier_Btn6_unlocked"]
 	btn_unlock_7.disabled = up["soldier_Btn7_unlocked"]
 	btn_unlock_7.text = tr("SKILL_UNLOCKED") if up["soldier_Btn7_unlocked"] else tr("SKILL_UNLOCK_SOLDIER")
 	
-	btn_skill_7.visible = up["soldier_Btn7_unlocked"]
-	btn_skill_7.disabled = up["soldier_skill7_unlocked"]
-	btn_skill_7.text = tr("SKILL_LEARNED") if up["soldier_skill7_unlocked"] else tr("SKILL_UNLOCK_SKILL")
 	
 	btn_unlock_8.visible = up["soldier_Btn7_unlocked"]
 	btn_unlock_8.disabled = up["soldier_Btn8_unlocked"]
 	btn_unlock_8.text = tr("SKILL_UNLOCKED") if up["soldier_Btn8_unlocked"] else tr("SKILL_UNLOCK_SOLDIER")
 	
-	btn_skill_8.visible = up["soldier_Btn8_unlocked"]
-	btn_skill_8.disabled = up["soldier_skill8_unlocked"]
-	btn_skill_8.text = tr("SKILL_LEARNED") if up["soldier_skill8_unlocked"] else tr("SKILL_UNLOCK_SKILL")
 	
-	# 4. 兵种伤害提升
+	# 5. 兵种伤害提升
 	var dmg_lvl: int = up["soldier_damage1_lvl"]
 	btn_damage_1.visible = up["soldier_Btn1_unlocked"]
 	btn_damage_1.disabled = (dmg_lvl >= MAX_UPGRADE_LEVEL)

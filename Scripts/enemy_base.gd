@@ -400,6 +400,15 @@ func _get_damage_targets() -> Array[Node2D]:
 	return [target]
 
 # 对单个目标结算一次伤害并防止同一段攻击重复命中。
+# 兵种威力技能加成：仅玩家单位吃加成，描述里的 +15%/级在此兑现；系统单位固定 1.0。
+func _get_player_damage_multiplier() -> float:
+	if is_system_spawned:
+		return 1.0
+	var idx := {"Armored_Axeman": 1, "Knight_Templar": 2, "Knight": 3, "Lancer": 4, "Flame_Golem": 5, "Wizard": 6, "Swordsman": 7, "Priest": 8}.get(character_name, 0)
+	if idx == 0:
+		return 1.0
+	return 1.0 + 0.15 * float(GameManager.upgrades.get("soldier_damage%d_lvl" % idx, 0))
+
 func _apply_damage_to_target(entity: Node2D, custom_multiplier: float) -> void:
 	if entity == self or not is_instance_valid(entity) or not entity.has_method("take_damage"):
 		return
@@ -408,7 +417,7 @@ func _apply_damage_to_target(entity: Node2D, custom_multiplier: float) -> void:
 	if hit_enemies_in_current_swing.has(entity):
 		return
 	hit_enemies_in_current_swing.append(entity)
-	entity.take_damage(int(attack_damage * custom_multiplier))
+	entity.take_damage(int(attack_damage * custom_multiplier * _get_player_damage_multiplier()))
 
 # 供自定义技能按指定区域结算范围伤害。
 func _apply_aoe_damage_to_area(area: Area2D, custom_multiplier: float) -> void:
@@ -578,10 +587,9 @@ func die() -> void:
 	is_attacking = false
 	change_state(State.DEATH)
 	
-	# 如果击杀的是系统敌怪，按击杀金币给玩家奖励金币并保存。
-	# 基础 1 金 + 击杀金币等级（每级 +1），0 级也不再是 0 金。
+	# 如果击杀的是系统敌怪，给玩家奖励金币并保存（固定 1 金）。
 	if is_system_spawned:
-		GameManager.add_gold(1 + GameManager.upgrades["kill_gold_lvl"])
+		GameManager.add_gold(1)
 		GameManager.save_local_config()
 	
 	# 【核心】：死亡时隐藏手动添加的扣血 Label

@@ -395,7 +395,7 @@ func _damage_enemy(target_node) -> void:
 func fire_laser() -> void:
 	if laser_skill and laser_skill.has_method("activate"):
 		if laser_skill.has_method("setup"):
-			laser_skill.setup(is_system_spawned, attack_damage * 3, attack3_target_mode, target)
+			laser_skill.setup(is_system_spawned, attack_damage * 3 + GameManager.upgrades.get("player_skill_2_power_lvl", 0) * 15, attack3_target_mode, target)
 		laser_skill.activate()
 
 # 停止当前激光技能。

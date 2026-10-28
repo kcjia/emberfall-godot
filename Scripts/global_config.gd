@@ -24,34 +24,25 @@ var server_url: String = "https://api.yourgame.com"
 
 # --- 2. 技能树强化字典 ---
 var upgrades: Dictionary = {
-	"kill_gold_lvl": 0,           # 击杀金币等级 (+1/级，最高10)
 	"gold_rate_lvl": 0,           # 金币增长速率等级
 	"player_skill_1_power_lvl": 0,    # 玩家技能1威力等级
 	"player_skill_2_power_lvl": 0,    # 玩家技能2威力等级
 	"soldier_damage1_lvl": 0,          # 兵种1威力增幅
 	"soldier_Btn1_unlocked": true, # 兵种1解锁
-	"soldier_skill1_unlocked": false,  # 兵种技能
 	"soldier_damage2_lvl": 0,          # 兵种2威力增幅
 	"soldier_Btn2_unlocked": false, # 兵种2解锁
-	"soldier_skill2_unlocked": false,  # 兵种技能
 	"soldier_damage3_lvl": 0,          # 兵种3威力增幅
 	"soldier_Btn3_unlocked": false, # 兵种3解锁
-	"soldier_skill3_unlocked": false,  # 兵种技能
 	"soldier_damage4_lvl": 0,          # 兵种4威力增幅
 	"soldier_Btn4_unlocked": false, # 兵种4解锁
-	"soldier_skill4_unlocked": false,  # 兵种技能
 	"soldier_damage5_lvl": 0,          # 兵种5威力增幅
 	"soldier_Btn5_unlocked": false, # 兵种5解锁
-	"soldier_skill5_unlocked": false,  # 兵种技能
 	"soldier_damage6_lvl": 0,          # 兵种6威力增幅
 	"soldier_Btn6_unlocked": false, # 兵种6解锁
-	"soldier_skill6_unlocked": false,  # 兵种技能
 	"soldier_damage7_lvl": 0,          # 兵种7威力增幅
 	"soldier_Btn7_unlocked": false, # 兵种7解锁
-	"soldier_skill7_unlocked": false,  # 兵种技能
 	"soldier_damage8_lvl": 0,          # 兵种8威力增幅
 	"soldier_Btn8_unlocked": false, # 兵种8解锁
-	"soldier_skill8_unlocked": false,  # 兵种技能
 
 }
 
