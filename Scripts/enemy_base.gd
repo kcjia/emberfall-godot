@@ -449,6 +449,13 @@ func _setup_health_bar_juice() -> void:
 		_health_fill_stylebox = orig_fill.duplicate() as StyleBoxFlat
 	else:
 		_health_fill_stylebox = StyleBoxFlat.new()
+		# 原填充不是扁平样式时，从背景偷圆角，避免方形填充从圆角背景里漏出来。
+		var orig_bg := currenthealth.get_theme_stylebox("background")
+		if orig_bg is StyleBoxFlat:
+			_health_fill_stylebox.corner_radius_top_left = orig_bg.corner_radius_top_left
+			_health_fill_stylebox.corner_radius_top_right = orig_bg.corner_radius_top_right
+			_health_fill_stylebox.corner_radius_bottom_right = orig_bg.corner_radius_bottom_right
+			_health_fill_stylebox.corner_radius_bottom_left = orig_bg.corner_radius_bottom_left
 	currenthealth.add_theme_stylebox_override("fill", _health_fill_stylebox)
 	# 残影条：直接复制主条节点（布局与主条完全一致，避免新建节点尺寸走样），
 	# 改名防重名、自带染色清零、强制垫底，掉血时慢慢追赶。
@@ -464,7 +471,8 @@ func _setup_health_bar_juice() -> void:
 	var ghost_bg := StyleBoxFlat.new()
 	ghost_bg.bg_color = Color(0.0, 0.0, 0.0, 0.0)
 	_ghost_health_bar.add_theme_stylebox_override("background", ghost_bg)
-	var ghost_fill := StyleBoxFlat.new()
+	# 残影填充直接复制主条填充再改白，圆角与主条完全一致，不会从圆角外漏出白角。
+	var ghost_fill := _health_fill_stylebox.duplicate() as StyleBoxFlat
 	ghost_fill.bg_color = Color(1.0, 1.0, 1.0, 0.9)
 	_ghost_health_bar.add_theme_stylebox_override("fill", ghost_fill)
 	add_child(_ghost_health_bar)
