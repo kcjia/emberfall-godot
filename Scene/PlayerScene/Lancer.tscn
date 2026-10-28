@@ -360,6 +360,211 @@ animations = [{
 "speed": 10.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lancer_atk1"]
+size = Vector2(34, 26)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lancer_atk2"]
+size = Vector2(40, 29)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lancer_atk3"]
+size = Vector2(54, 33)
+
+[sub_resource type="Animation" id="Animation_lancer_atk1"]
+length = 0.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Attack1"]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.35, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"values": [{
+"args": [false, 1.0],
+"method": &"deal_swing_damage"
+}, {
+"args": [&"Attack1"],
+"method": &"_on_animation_finished"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_lancer_atk2"]
+length = 0.9
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Attack2"]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.4, 0.8, 0.9),
+"transitions": PackedFloat32Array(1, 1, 1),
+"values": [{
+"args": [false, 1.5],
+"method": &"deal_swing_damage"
+}, {
+"args": [true, 1.5],
+"method": &"deal_swing_damage"
+}, {
+"args": [&"Attack2"],
+"method": &"_on_animation_finished"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_lancer_atk3"]
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Attack3"]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.12, 0.5, 0.55, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"values": [{
+"args": [],
+"method": &"toggle_invincibility"
+}, {
+"args": [],
+"method": &"toggle_invincibility"
+}, {
+"args": [false, 5.0],
+"method": &"deal_swing_damage"
+}, {
+"args": [&"Attack3"],
+"method": &"_on_animation_finished"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_lancer_death"]
+resource_name = "Death"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Death"]
+}
+
+[sub_resource type="Animation" id="Animation_lancer_hurt"]
+resource_name = "Hurt"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Hurt"]
+}
+
+[sub_resource type="Animation" id="Animation_lancer_idle"]
+resource_name = "Idle"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Idle"]
+}
+
+[sub_resource type="Animation" id="Animation_lancer_reset"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Attack3"]
+}
+
+[sub_resource type="Animation" id="Animation_lancer_walk"]
+resource_name = "Walk"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Walk"]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_lancer"]
+_data = {
+&"Attack1": SubResource("Animation_lancer_atk1"),
+&"Attack2": SubResource("Animation_lancer_atk2"),
+&"Attack3": SubResource("Animation_lancer_atk3"),
+&"Death": SubResource("Animation_lancer_death"),
+&"Hurt": SubResource("Animation_lancer_hurt"),
+&"Idle": SubResource("Animation_lancer_idle"),
+&"RESET": SubResource("Animation_lancer_reset"),
+&"Walk": SubResource("Animation_lancer_walk")
+}
+
 [node name="CharacterBody2D" unique_id=1983484150 instance=ExtResource("1_ia2uj")]
 
 [node name="CollisionShape2D" parent="." index="1" unique_id=1427630048]
@@ -370,3 +575,18 @@ shape = SubResource("CapsuleShape2D_ia2uj")
 sprite_frames = SubResource("SpriteFrames_wxoef")
 animation = &"Attack3"
 frame_progress = 0.7844591
+
+[node name="AnimationPlayer" parent="." index="3" unique_id=910956313]
+libraries/ = SubResource("AnimationLibrary_lancer")
+
+[node name="CollisionShape2D" parent="AttackArea" parent_id_path=PackedInt32Array(706038846) index="0" unique_id=1649134205]
+position = Vector2(12, -4)
+shape = SubResource("RectangleShape2D_lancer_atk1")
+
+[node name="CollisionShape2D" parent="Attack2Area" parent_id_path=PackedInt32Array(936752056) index="0" unique_id=1176160445]
+position = Vector2(15, -5.5)
+shape = SubResource("RectangleShape2D_lancer_atk2")
+
+[node name="CollisionShape2D" parent="Attack3Area" parent_id_path=PackedInt32Array(1057617056) index="0" unique_id=1138898923]
+position = Vector2(22, -7.5)
+shape = SubResource("RectangleShape2D_lancer_atk3")

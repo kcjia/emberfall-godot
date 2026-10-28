@@ -383,9 +383,21 @@ func deal_swing_damage(is_new_segment: bool = false, custom_multiplier: float = 
 func _get_damage_targets() -> Array[Node2D]:
 	if current_state == State.ATTACK3 and attack3_target_mode == Attack3TargetMode.AREA:
 		return _get_all_targets(attack3_area)
-	if is_instance_valid(target):
-		return [target]
-	return []
+	if not is_instance_valid(target):
+		return []
+	# 命中帧再校验一次：目标必须仍在本次招式的攻击范围内，否则这一段打空。
+	# 否则目标早已跑远，挥砍动画的命中帧仍会隔空命中。
+	var attack_area: Area2D = null
+	match current_state:
+		State.ATTACK1:
+			attack_area = attack_detector
+		State.ATTACK2:
+			attack_area = attack2_area
+		State.ATTACK3:
+			attack_area = attack3_area
+	if attack_area != null and not _attack_area_contains_target(attack_area):
+		return []
+	return [target]
 
 # 对单个目标结算一次伤害并防止同一段攻击重复命中。
 func _apply_damage_to_target(entity: Node2D, custom_multiplier: float) -> void:

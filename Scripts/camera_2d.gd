@@ -5,7 +5,7 @@ extends Camera2D
 @export var zoom_speed: float = 0.1
 
 # --- 键盘移动配置 ---
-@export var move_speed: float = 100.0   # 摄像机移动速度
+@export var move_speed: float = 600.0   # 摄像机移动速度
 @export var smoothness: float = 25.0  # 平滑度（数值越大按键响应越快）
 
 # 内部速度变量，用于实现物理惯性减速

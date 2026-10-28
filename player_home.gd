@@ -377,6 +377,10 @@ func _setup_faction_collision() -> void:
 func activate_attack_hitbox(area_name: String) -> void:
 	if not attack_areas.has(area_name):
 		return
+	# 命中帧再校验一次：锁定的目标必须仍在该攻击范围内，否则这次打空。
+	# 否则目标早已跑远，基地攻击动画的命中帧仍会隔空命中。
+	if not _area_contains_target(area_name, target):
+		return
 	_damage_enemy(target)
 
 # 对单个非同阵营目标造成基地攻击伤害。
